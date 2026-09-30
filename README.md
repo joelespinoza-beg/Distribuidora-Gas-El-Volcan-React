@@ -16,23 +16,46 @@ El Volcán es una empresa familiar de Chillán que distribuye cilindros de gas d
 src/
 ├── components/
 │   ├── atoms/
-│   │   ├── 
-│   │   └── 
+│   │   ├── Boton.jsx
+│   │   └── EtiquetaEstadoPedido.jsx
+│   │   ├── Precio.jsx
+│   │   └── CampoTexto.jsx
+│   │   ├── Selector.jsx
+│   │   └── ContadorCantidad.jsx
 │   ├── molecules/
 │   │   └── 
+│   │   └── 
+│   │   └── 
+│   │   └── 
+│   │   └── 
 │   ├── organisms/
+│   │   └── 
+│   │   └── 
 │   │   └── 
 │   └── templates/
 │       └── 
 └── pages/
-    └── Inicio.jsx 
+|    └── Inicio.jsx
+|    └── Catálogo.jsx  
+└── data/
+|    └──  
+└── services/
+|    └──  
+└── context/
+|    └──              
+└── utils/
+    └──  
 
 
 # Tecnologia usada
 
+- React + Vite
+- React Bootstrap
 
 # Comandos para usar el proyecto
 
+npm install
+npm run dev
 
 
 # Material complementario
