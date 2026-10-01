@@ -1,6 +1,6 @@
 import React from 'react';
 import EtiquetaEstadoPedido from '../atoms/EtiquetaEstadoPedido';
-import Precio from '../atoms/precio';
+import Precio from '../atoms/Precio';
 
 function ItemPedido(props) {
 	const pedido = props.pedido || {};
