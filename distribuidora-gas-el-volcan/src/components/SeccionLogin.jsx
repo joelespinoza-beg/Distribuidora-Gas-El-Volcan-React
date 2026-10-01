@@ -1,4 +1,4 @@
-import FormularioCliente from '../molecules/FormularioCliente';
+import FormularioCliente from './organism/FormularioCliente';
 import Boton from './atoms/Boton';
 
 function SeccionLogin() {
