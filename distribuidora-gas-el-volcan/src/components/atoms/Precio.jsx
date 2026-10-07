@@ -1,9 +1,9 @@
 import React from 'react';
 
 function Precio(props) {
-  const monto = props.monto || 0;
+  const monto = props.monto ?? 0;
   const tipoCliente = props.tipoCliente || '';
-  const destacado = props.destacado || false;
+  const destacado = props.destacado ?? false;
 
   const precioFormateado = new Intl.NumberFormat('es-CL', {
     style: 'currency',

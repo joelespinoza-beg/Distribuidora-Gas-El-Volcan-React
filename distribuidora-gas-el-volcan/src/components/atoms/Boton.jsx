@@ -1,6 +1,8 @@
+import React from 'react';
+
 function Boton(props) {
-  const variante = props.variante || "primary";
-  const type = props.type || props.tipo || "button";
+  const variante = props.variante || 'primary';
+  const type = props.type || props.tipo || 'button';
 
   return (
     <button

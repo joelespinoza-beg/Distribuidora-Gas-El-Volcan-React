@@ -1,9 +1,10 @@
 import React from 'react';
 
 function ContadorCantidad(props) {
-  const cantidad = props.cantidad || 1;
-  const min = props.min || 1;
-  const max = props.max || 10;
+  // ?? solo reemplaza null/undefined, así min={0} se respeta
+  const cantidad = props.cantidad ?? 1;
+  const min = props.min ?? 1;
+  const max = props.max ?? 10;
 
   return (
     <div className="input-group" style={{ maxWidth: '130px' }}>

@@ -1,5 +1,6 @@
-import FormularioCliente from './organism/FormularioCliente';
+import FormularioCliente from './organism/FormularioLogin';
 import Boton from './atoms/Boton';
+import FormularioLogin from './FormularioLogin';
 
 function SeccionLogin() {
   const handleRegistro = () => {
@@ -16,7 +17,7 @@ function SeccionLogin() {
         </p>
       </div>
 
-      <FormularioCliente />
+      <FormularioLogin />
 
       <div className="mt-4 text-center">
         <p className="text-muted mb-2">¿Aún no tienes una cuenta?</p>
