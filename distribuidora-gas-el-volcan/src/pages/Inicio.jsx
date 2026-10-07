@@ -7,7 +7,6 @@ import Boton from '../components/atoms/Boton';
 const Inicio = () => {
   const navigate = useNavigate();
 
-  // Datos basados en la imagen de tu catálogo
   const listaCilindros = [
     { id: 1, nombre: 'Cilindro 5 kg', descripcion: 'Gas licuado normal', precio: 15000 },
     { id: 2, nombre: 'Cilindro 11 kg', descripcion: 'Gas licuado normal', precio: 20000 },
@@ -82,7 +81,6 @@ const Inicio = () => {
           </div>
           <div className="row">
             <div className="col-12 text-center">
-              {/* Aquí pasamos el arreglo a tu componente */}
               <CatalogoGas cilindros={listaCilindros} />
             </div>
           </div>
