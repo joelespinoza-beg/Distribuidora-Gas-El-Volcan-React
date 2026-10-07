@@ -1,5 +1,4 @@
-import FormularioCliente from './organism/FormularioLogin';
-import Boton from './atoms/Boton';
+import Boton from '../atoms/Boton';
 import FormularioLogin from './FormularioLogin';
 
 function SeccionLogin() {
