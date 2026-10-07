@@ -1,6 +1,6 @@
 import React from 'react';
 import Boton from '../atoms/Boton';
-import Precio from '../atoms/precio';
+import Precio from '../atoms/Precio';
 
 function TarjetaProducto(props) {
 	const producto = props.producto || {};

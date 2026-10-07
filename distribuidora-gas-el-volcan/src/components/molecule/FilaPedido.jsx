@@ -1,6 +1,6 @@
 import React from 'react';
 import ContadorCantidad from '../atoms/ContadorCantidad';
-import Precio from '../atoms/precio';
+import Precio from '../atoms/Precio';
 
 function FilaPedido(props) {
 	const cantidad = props.cantidad ?? 1;
