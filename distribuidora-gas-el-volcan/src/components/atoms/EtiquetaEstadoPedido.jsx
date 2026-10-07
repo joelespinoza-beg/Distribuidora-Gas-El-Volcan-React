@@ -1,9 +1,12 @@
 import React from 'react';
 
-function EtiquetaEstadoPedido({ estado, className = '', ...restoProps }) {
+function EtiquetaEstadoPedido(props) {
   return (
-    <span className={className.trim()} {...restoProps}>
-      {estado}
+    <span
+      id={props.id}
+      className={(props.className || '').trim()}
+    >
+      {props.estado}
     </span>
   );
 }

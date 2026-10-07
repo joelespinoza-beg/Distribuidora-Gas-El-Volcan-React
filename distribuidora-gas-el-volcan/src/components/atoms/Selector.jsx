@@ -1,15 +1,21 @@
 import React from 'react';
 
-function Selector({ value, onChange, opciones = [], className = '', ...restoProps }) {
+function Selector(props) {
+  const opciones = props.opciones || [];
+
   return (
     <select
-      value={value}
-      onChange={onChange}
-      className={className.trim()}
-      {...restoProps}
+      id={props.id}
+      name={props.name}
+      value={props.value}
+      onChange={props.onChange}
+      disabled={props.disabled}
+      required={props.required}
+      className={(props.className || '').trim()}
     >
-      {/* Opción por defecto opcional */}
-      <option value="" disabled>Seleccione una opción</option>
+      <option value="" disabled>
+        {props.placeholder || 'Seleccione una opción'}
+      </option>
       
       {opciones.map((opcion, index) => (
         <option key={index} value={opcion.valor}>

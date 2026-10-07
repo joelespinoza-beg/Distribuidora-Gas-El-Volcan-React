@@ -1,15 +1,18 @@
 import React from 'react';
 
-function ContadorCantidad({ value, onChange, min = 1, max, className = '', ...restoProps }) {
+function ContadorCantidad(props) {
   return (
     <input
+      id={props.id}
+      name={props.name}
       type="number"
-      value={value}
-      onChange={onChange}
-      min={min}
-      max={max}
-      className={className.trim()}
-      {...restoProps}
+      value={props.value ?? props.cantidad}
+      onChange={props.onChange}
+      min={props.min}
+      max={props.max}
+      disabled={props.disabled}
+      required={props.required}
+      className={(props.className || '').trim()}
     />
   );
 }

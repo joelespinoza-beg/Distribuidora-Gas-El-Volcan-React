@@ -1,13 +1,17 @@
 import React from 'react';
 
-function Precio({ valor, moneda = '$', className = '', ...restoProps }) {
+function Precio(props) {
+  const valor = props.valor !== undefined ? props.valor : props.monto;
   const valorFormateado = typeof valor === 'number' 
     ? valor.toLocaleString('es-CL') 
     : valor;
 
   return (
-    <span className={className.trim()} {...restoProps}>
-      {moneda} {valorFormateado}
+    <span
+      id={props.id}
+      className={(props.className || '').trim()}
+    >
+      {props.moneda || '$'} {valorFormateado}
     </span>
   );
 }

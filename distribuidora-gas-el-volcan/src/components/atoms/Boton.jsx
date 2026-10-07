@@ -1,13 +1,16 @@
 import React from 'react';
 
-function Boton({ children, type = 'button', className = '', ...restoProps }) {
+function Boton(props) {
   return (
     <button
-      type={type}
-      className={className.trim()}
-      {...restoProps}
+      id={props.id}
+      name={props.name}
+      type={props.type || 'button'}
+      className={(props.className || '').trim()}
+      onClick={props.onClick}
+      disabled={props.disabled}
     >
-      {children}
+      {props.children}
     </button>
   );
 }

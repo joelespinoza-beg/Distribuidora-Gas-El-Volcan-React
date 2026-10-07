@@ -1,14 +1,17 @@
 import React from 'react';
 
-function CampoTexto({ type = 'text', value, onChange, placeholder, className = '', ...restoProps }) {
+function CampoTexto(props) {
   return (
     <input
-      type={type}
-      value={value}
-      onChange={onChange}
-      placeholder={placeholder}
-      className={className.trim()}
-      {...restoProps}
+      id={props.id}
+      name={props.name}
+      type={props.type || 'text'}
+      value={props.value}
+      onChange={props.onChange}
+      placeholder={props.placeholder}
+      disabled={props.disabled}
+      required={props.required}
+      className={(props.className || '').trim()}
     />
   );
 }
