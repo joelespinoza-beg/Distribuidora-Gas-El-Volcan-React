@@ -1,18 +1,13 @@
 import React from 'react';
 
-function Boton(props) {
-  const variante = props.variante || 'primary';
-  const type = props.type || props.tipo || 'button';
-
+function Boton({ children, type = 'button', className = '', ...restoProps }) {
   return (
     <button
       type={type}
-      className={`btn btn-${variante} ${props.className || ''}`.trim()}
-      onClick={props.onClick}
-      disabled={props.disabled}
-      style={props.style}
+      className={className.trim()}
+      {...restoProps}
     >
-      {props.texto}
+      {children}
     </button>
   );
 }

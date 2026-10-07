@@ -1,21 +1,14 @@
 import React from 'react';
 
-function CampoTexto(props) {
-  const type = props.type || 'text';
-  const placeholder = props.placeholder || '';
-  const required = props.required || false;
-
+function CampoTexto({ type = 'text', value, onChange, placeholder, className = '', ...restoProps }) {
   return (
     <input
-      id={props.id}
       type={type}
-      name={props.name}
-      value={props.value}
-      onChange={props.onChange}
+      value={value}
+      onChange={onChange}
       placeholder={placeholder}
-      disabled={props.disabled}
-      required={required}
-      className={`form-control ${props.className || ''}`}
+      className={className.trim()}
+      {...restoProps}
     />
   );
 }

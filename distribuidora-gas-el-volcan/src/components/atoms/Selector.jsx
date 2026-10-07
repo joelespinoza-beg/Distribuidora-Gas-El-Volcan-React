@@ -1,23 +1,19 @@
 import React from 'react';
 
-function Selector(props) {
-  const opciones = props.opciones ?? [];
-  const placeholder = props.placeholder ?? 'Seleccione una opción';
-
+function Selector({ value, onChange, opciones = [], className = '', ...restoProps }) {
   return (
     <select
-      id={props.id}
-      name={props.name}
-      value={props.value}
-      onChange={props.onChange}
-      disabled={props.disabled}
-      required={props.required}
-      className={`form-select ${props.className || ''}`.trim()}
+      value={value}
+      onChange={onChange}
+      className={className.trim()}
+      {...restoProps}
     >
-      <option value="">{placeholder}</option>
-      {opciones.map((opcion) => (
-        <option key={opcion.val} value={opcion.val}>
-          {opcion.label}
+      {/* Opción por defecto opcional */}
+      <option value="" disabled>Seleccione una opción</option>
+      
+      {opciones.map((opcion, index) => (
+        <option key={index} value={opcion.valor}>
+          {opcion.texto}
         </option>
       ))}
     </select>
