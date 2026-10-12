@@ -11,7 +11,7 @@ function CampoTexto(props) {
       placeholder={props.placeholder}
       disabled={props.disabled}
       required={props.required}
-      className={(props.className || '').trim()}
+      className={`form-control ${props.className || ''}`.trim()}
     />
   );
 }

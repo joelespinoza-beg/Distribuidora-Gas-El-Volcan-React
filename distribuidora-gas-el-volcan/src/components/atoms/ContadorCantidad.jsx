@@ -1,19 +1,34 @@
 import React from 'react';
 
 function ContadorCantidad(props) {
+  const cantidad = props.cantidad ?? 1;
+  const min = props.min ?? 1;
+  const max = props.max ?? 10;
+
   return (
-    <input
-      id={props.id}
-      name={props.name}
-      type="number"
-      value={props.value ?? props.cantidad}
-      onChange={props.onChange}
-      min={props.min}
-      max={props.max}
-      disabled={props.disabled}
-      required={props.required}
-      className={(props.className || '').trim()}
-    />
+    <div className="input-group contador-cantidad">
+      <button
+        type="button"
+        className="btn btn-outline-secondary"
+        onClick={props.onDecrementar}
+        disabled={cantidad <= min}
+      >
+        -
+      </button>
+
+      <span className="form-control text-center fw-bold bg-light">
+        {cantidad}
+      </span>
+
+      <button
+        type="button"
+        className="btn btn-outline-secondary"
+        onClick={props.onIncrementar}
+        disabled={cantidad >= max}
+      >
+        +
+      </button>
+    </div>
   );
 }
 

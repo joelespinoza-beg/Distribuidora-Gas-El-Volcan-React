@@ -6,13 +6,9 @@ import Footer from '../organism/Footer';
 function PlantillaPublica(props) {
   return (
     <div className="d-flex flex-column min-vh-100">
-      <Navbar
-        paginaActual={props.paginaActual}
-        onNavegar={props.onNavegar}
-        onLogin={props.onLogin}
-      />
+      <Navbar />
 
-      <main className="container py-4 flex-grow-1">
+      <main className="flex-grow-1">
         {props.children}
       </main>
 

@@ -12,7 +12,7 @@ function FormularioLogin(props) {
   };
 
   return (
-    <div className="card w-100 p-4 shadow-sm" style={{ maxWidth: '480px' }}>
+    <div className="card w-100 p-4 shadow-sm formulario-login">
       <form onSubmit={handleSubmit} className="d-flex flex-column gap-3">
         <CampoFormulario
           id="email"

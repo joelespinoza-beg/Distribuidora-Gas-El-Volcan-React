@@ -2,8 +2,8 @@ import React from 'react';
 import CampoSelector from './CampoSelector';
 
 const tiposCliente = [
-  { val: 'residencial', label: 'Residencial' },
-  { val: 'comercial', label: 'Comercial' }
+  { valor: 'residencial', texto: 'Residencial' },
+  { valor: 'comercial', texto: 'Comercial' }
 ];
 
 function SelectorTipoClient(props) {

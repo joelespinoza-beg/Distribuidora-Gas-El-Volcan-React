@@ -1,29 +1,21 @@
 import React, { useState } from 'react';
-import Boton from '../atoms/Boton';
+import { Link, NavLink } from 'react-router-dom';
 
 const enlacesPorDefecto = [
-  { id: 'inicio', texto: 'Inicio', href: '/' },
-  { id: 'catalogo', texto: 'Catálogo', href: '/catalogo' }
+  { id: 'inicio', texto: 'Inicio', to: '/' },
+  { id: 'catalogo', texto: 'Catálogo', to: '/catalogo' }
 ];
 
 function Navbar(props) {
   const enlaces = props.enlaces ?? enlacesPorDefecto;
   const [abierto, setAbierto] = useState(false);
 
-  const handleClick = (event, enlace) => {
-    if (props.onNavegar) {
-      event.preventDefault();
-      props.onNavegar(enlace.id);
-    }
-    setAbierto(false);
-  };
-
   return (
     <nav className="navbar navbar-expand-lg bg-dark navbar-dark">
       <div className="container">
-        <span className="navbar-brand fw-bold">
+        <Link to="/" className="navbar-brand fw-bold">
           {props.marca || 'Gas El Volcán'}
-        </span>
+        </Link>
 
         <button
           type="button"
@@ -39,24 +31,25 @@ function Navbar(props) {
           <ul className="navbar-nav me-auto mb-2 mb-lg-0">
             {enlaces.map((enlace) => (
               <li key={enlace.id} className="nav-item">
-                <a
-                  href={enlace.href}
-                  className={`nav-link ${props.paginaActual === enlace.id ? 'active' : ''}`}
-                  onClick={(event) => handleClick(event, enlace)}
+                <NavLink
+                  to={enlace.to}
+                  end={enlace.to === '/'}
+                  className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`.trim()}
+                  onClick={() => setAbierto(false)}
                 >
                   {enlace.texto}
-                </a>
+                </NavLink>
               </li>
             ))}
           </ul>
 
-          {props.onLogin && (
-            <Boton
-              texto={props.textoLogin || 'Ingresar'}
-              variante="outline-light"
-              onClick={props.onLogin}
-            />
-          )}
+          <Link
+            to={props.rutaLogin || '/login'}
+            className="btn btn-outline-light"
+            onClick={() => setAbierto(false)}
+          >
+            {props.textoLogin || 'Ingresar'}
+          </Link>
         </div>
       </div>
     </nav>
