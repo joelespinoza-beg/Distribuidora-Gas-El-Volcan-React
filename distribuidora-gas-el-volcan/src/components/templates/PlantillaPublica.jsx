@@ -1,7 +1,7 @@
 import React from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import Navbar from '../organism/Navbar';
-import Footer from '../organism/Footer';
+import Navbar from '../organisms/Navbar';
+import Footer from '../organisms/Footer';
 
 
 function PlantillaPublica(props) {

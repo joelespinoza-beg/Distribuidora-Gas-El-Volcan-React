@@ -1,7 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import PlantillaPublica from '../components/templates/PlantillaPublica';
-import CatalogoGas from '../components/organism/CatalogoGas';
+import CatalogoGas from '../components/organisms/CatalogoGas';
 import { cilindros } from '../data/cilindros';
 import { useTituloPagina } from '../hooks/useTituloPagina';
 

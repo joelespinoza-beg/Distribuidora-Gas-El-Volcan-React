@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import Boton from '../atoms/Boton';
-import CampoFormulario from '../molecule/CampoFormulario';
+import CampoFormulario from '../molecules/CampoFormulario';
 import { validarEmail, validarClave } from '../../utils/validaciones';
 
 function FormularioLogin(props) {

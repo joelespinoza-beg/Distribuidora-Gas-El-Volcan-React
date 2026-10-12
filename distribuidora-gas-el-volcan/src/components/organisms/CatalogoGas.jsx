@@ -1,5 +1,5 @@
 import React from 'react';
-import TarjetaProducto from '../molecule/TarjetaProducto';
+import TarjetaProducto from '../molecules/TarjetaProducto';
 
 function CatalogoGas({ cilindros = [], onAgregar, onVer }) {
   return (

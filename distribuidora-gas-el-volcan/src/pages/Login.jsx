@@ -1,7 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import PlantillaPublica from '../components/templates/PlantillaPublica';
-import SeccionLogin from '../components/organism/SeccionLogin';
+import SeccionLogin from '../components/organisms/SeccionLogin';
 import { useTituloPagina } from '../hooks/useTituloPagina';
 
 function Login() {
