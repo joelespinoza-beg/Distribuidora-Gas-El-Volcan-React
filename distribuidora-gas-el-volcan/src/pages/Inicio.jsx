@@ -4,9 +4,12 @@ import PlantillaPublica from '../components/templates/PlantillaPublica';
 import CatalogoGas from '../components/organism/CatalogoGas';
 import Boton from '../components/atoms/Boton';
 import { cilindros } from '../data/cilindros';
+import { useTituloPagina } from '../hooks/useTituloPagina';
 
 function Inicio() {
   const navigate = useNavigate();
+
+  useTituloPagina('Inicio');
 
   const handleAgregar = (producto) => {
     console.log('Agregando al carrito:', producto.nombre);
@@ -78,7 +81,11 @@ function Inicio() {
           <p className="text-muted text-center mb-5">
             Elige el formato que mejor se adapte a tu hogar o negocio
           </p>
-          <CatalogoGas cilindros={cilindros} onAgregar={handleAgregar} />
+          <CatalogoGas
+            cilindros={cilindros}
+            onAgregar={handleAgregar}
+            onVer={(producto) => navigate(`/producto/${producto.id}`)}
+          />
         </div>
       </div>
     </PlantillaPublica>

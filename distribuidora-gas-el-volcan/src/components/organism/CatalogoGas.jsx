@@ -1,7 +1,7 @@
 import React from 'react';
 import TarjetaProducto from '../molecule/TarjetaProducto';
 
-function CatalogoGas({ cilindros = [], onAgregar }) {
+function CatalogoGas({ cilindros = [], onAgregar, onVer }) {
   return (
     <section>
       <h2 className="mb-4">Nuestros Cilindros</h2>
@@ -13,6 +13,7 @@ function CatalogoGas({ cilindros = [], onAgregar }) {
               producto={cilindro}
               textoBoton="Agregar al carrito"
               onAgregar={onAgregar}
+              onVer={onVer}
             />
           </div>
         ))}

@@ -1,21 +1,33 @@
 import React, { useState } from 'react';
-import { Link, NavLink } from 'react-router-dom';
 
 const enlacesPorDefecto = [
-  { id: 'inicio', texto: 'Inicio', to: '/' },
-  { id: 'catalogo', texto: 'Catálogo', to: '/catalogo' }
+  { id: 'inicio', texto: 'Inicio', ruta: '/' },
+  { id: 'catalogo', texto: 'Catálogo', ruta: '/catalogo' }
 ];
+
 
 function Navbar(props) {
   const enlaces = props.enlaces ?? enlacesPorDefecto;
+  const rutaLogin = props.rutaLogin || '/login';
+  const rutaActual = props.rutaActual || '';
   const [abierto, setAbierto] = useState(false);
+
+  function ir(evento, ruta) {
+    evento.preventDefault();
+    setAbierto(false);
+    props.onNavegar?.(ruta);
+  }
+
+  function estaActivo(ruta) {
+    return ruta === '/' ? rutaActual === '/' : rutaActual.startsWith(ruta);
+  }
 
   return (
     <nav className="navbar navbar-expand-lg bg-dark navbar-dark">
       <div className="container">
-        <Link to="/" className="navbar-brand fw-bold">
+        <a href="/" className="navbar-brand fw-bold" onClick={(e) => ir(e, '/')}>
           {props.marca || 'Gas El Volcán'}
-        </Link>
+        </a>
 
         <button
           type="button"
@@ -31,25 +43,24 @@ function Navbar(props) {
           <ul className="navbar-nav me-auto mb-2 mb-lg-0">
             {enlaces.map((enlace) => (
               <li key={enlace.id} className="nav-item">
-                <NavLink
-                  to={enlace.to}
-                  end={enlace.to === '/'}
-                  className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`.trim()}
-                  onClick={() => setAbierto(false)}
+                <a
+                  href={enlace.ruta}
+                  className={`nav-link ${estaActivo(enlace.ruta) ? 'active' : ''}`.trim()}
+                  onClick={(e) => ir(e, enlace.ruta)}
                 >
                   {enlace.texto}
-                </NavLink>
+                </a>
               </li>
             ))}
           </ul>
 
-          <Link
-            to={props.rutaLogin || '/login'}
+          <a
+            href={rutaLogin}
             className="btn btn-outline-light"
-            onClick={() => setAbierto(false)}
+            onClick={(e) => ir(e, rutaLogin)}
           >
             {props.textoLogin || 'Ingresar'}
-          </Link>
+          </a>
         </div>
       </div>
     </nav>

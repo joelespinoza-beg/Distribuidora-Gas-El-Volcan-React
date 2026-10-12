@@ -15,12 +15,20 @@ function TarjetaProducto(props) {
 
         <div className="mt-auto d-flex flex-wrap align-items-center justify-content-between gap-3">
           <Precio monto={producto.precio ?? 0} tipoCliente={producto.tipoCliente} />
-          <Boton
-            texto={props.textoBoton || 'Agregar'}
-            type="button"
-            onClick={() => props.onAgregar?.(producto)}
-            disabled={props.disabled}
-          />
+          <div className="d-flex flex-wrap gap-2">
+            {props.onVer && (
+              <Boton
+                texto="Ver detalle"
+                variante="outline-secondary"
+                onClick={() => props.onVer(producto)}
+              />
+            )}
+            <Boton
+              texto={props.textoBoton || 'Agregar'}
+              onClick={() => props.onAgregar?.(producto)}
+              disabled={props.disabled}
+            />
+          </div>
         </div>
       </div>
     </article>
