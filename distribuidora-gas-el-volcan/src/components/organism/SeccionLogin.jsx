@@ -2,15 +2,8 @@ import React from 'react';
 import Boton from '../atoms/Boton';
 import FormularioLogin from './FormularioLogin';
 
-function SeccionLogin() {
-  const handleLogin = (credenciales) => {
-    console.log('Iniciando sesión...', credenciales);
-  };
 
-  const handleRegistro = () => {
-    console.log('Redirigiendo a registro...');
-  };
-
+function SeccionLogin(props) {
   return (
     <section className="container py-5 d-flex flex-column align-items-center">
       <div className="text-center mb-4 encabezado-login">
@@ -20,14 +13,14 @@ function SeccionLogin() {
         </p>
       </div>
 
-      <FormularioLogin onSubmit={handleLogin} />
+      <FormularioLogin onEnviar={props.onEnviar} />
 
       <div className="mt-4 text-center">
         <p className="text-muted mb-2">¿Aún no tienes una cuenta?</p>
         <Boton
           texto="Crear nueva cuenta"
           variante="outline-dark"
-          onClick={handleRegistro}
+          onClick={props.onRegistro}
         />
       </div>
     </section>
