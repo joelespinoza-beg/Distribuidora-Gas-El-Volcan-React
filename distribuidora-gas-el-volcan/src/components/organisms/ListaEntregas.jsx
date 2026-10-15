@@ -1,4 +1,6 @@
 import React from 'react';
+import Boton from '../atoms/Boton';
+import EtiquetaEstadoPedido from '../atoms/EtiquetaEstadoPedido';
 
 function normalizarEstado(estado = '') {
   return String(estado)
@@ -8,7 +10,15 @@ function normalizarEstado(estado = '') {
     .replace(/\s+/g, '_');
 }
 
-function ListaEntregas({ pedidos = [], repartidorId, onCambiarEstado }) {
+function ListaEntregas(props) {
+  const {
+    pedidos = [],
+    repartidorId,
+    onCambiarEstado,
+    id,
+    className,
+    ...atributosSeccion
+  } = props;
   const entregasAsignadas = repartidorId === undefined
     ? pedidos
     : pedidos.filter((pedido) => String(pedido.repartidorId) === String(repartidorId));
@@ -20,7 +30,12 @@ function ListaEntregas({ pedidos = [], repartidorId, onCambiarEstado }) {
   }
 
   return (
-    <section aria-labelledby="titulo-entregas">
+    <section
+      {...atributosSeccion}
+      id={id}
+      className={className}
+      aria-labelledby="titulo-entregas"
+    >
       <h2 id="titulo-entregas" className="mb-3">Mis entregas</h2>
       {entregasAsignadas.length === 0 ? (
         <p role="status" className="text-muted">No tienes entregas asignadas.</p>
@@ -34,9 +49,10 @@ function ListaEntregas({ pedidos = [], repartidorId, onCambiarEstado }) {
                 <div className="card-body">
                   <div className="d-flex flex-wrap justify-content-between gap-2">
                     <h3 className="h5">Pedido #{pedido.id}</h3>
-                    <span className="badge text-bg-secondary align-self-start">
-                      {entregado ? 'Entregado' : estado === 'en_camino' ? 'En camino' : 'Pendiente'}
-                    </span>
+                    <EtiquetaEstadoPedido
+                      estado={entregado ? 'Entregado' : estado === 'en_camino' ? 'En camino' : 'Pendiente'}
+                      className="align-self-start"
+                    />
                   </div>
                   <p className="mb-1"><strong>{pedido.cliente}</strong></p>
                   <p className="mb-1">{pedido.direccion}</p>
@@ -45,13 +61,12 @@ function ListaEntregas({ pedidos = [], repartidorId, onCambiarEstado }) {
                     {pedido.cantidad ? ` · Cantidad: ${pedido.cantidad}` : ''}
                   </p>
                   {!entregado && (
-                    <button
+                    <Boton
                       type="button"
-                      className="btn btn-primary w-100"
+                      className="w-100"
+                      texto={estado === 'en_camino' ? 'Confirmar entrega' : 'Marcar en camino'}
                       onClick={() => avanzarEntrega(pedido)}
-                    >
-                      {estado === 'en_camino' ? 'Confirmar entrega' : 'Marcar en camino'}
-                    </button>
+                    />
                   )}
                 </div>
               </li>

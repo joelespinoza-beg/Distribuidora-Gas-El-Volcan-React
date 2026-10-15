@@ -1,11 +1,12 @@
 import React from 'react';
 import { render, screen, within } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
+import { productosCatalogo } from '../../data/productos';
 import TablaProductos from './TablaProductos';
 
 describe('TablaProductos', () => {
   it('muestra productos, ambos precios y el stock del catálogo', () => {
-    render(<TablaProductos />);
+    render(<TablaProductos productos={productosCatalogo} />);
 
     expect(screen.getByRole('table', {
       name: 'Catálogo de productos, precios y stock actual'

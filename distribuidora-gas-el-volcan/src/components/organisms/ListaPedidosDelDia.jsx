@@ -1,17 +1,29 @@
-import React, { useState } from 'react';
+import React from 'react';
+import Boton from '../atoms/Boton';
 
-const estadosPedido = [
+const estadosPorDefecto = [
   { valor: 'pendiente', texto: 'Pendiente' },
   { valor: 'asignado', texto: 'Asignado' },
   { valor: 'en_camino', texto: 'En camino' },
   { valor: 'entregado', texto: 'Entregado' }
 ];
 
-function ListaPedidosDelDia({ pedidos = [], repartidores = [], onAsignar, onCambiarEstado }) {
-  const [asignaciones, setAsignaciones] = useState({});
+function ListaPedidosDelDia(props) {
+  const {
+    pedidos = [],
+    repartidores = [],
+    estadosPedido = estadosPorDefecto,
+    asignaciones = {},
+    onSeleccionarRepartidor,
+    onAsignar,
+    onCambiarEstado,
+    id,
+    className,
+    ...atributosSeccion
+  } = props;
 
   function seleccionarRepartidor(pedidoId, repartidorId) {
-    setAsignaciones((actuales) => ({ ...actuales, [pedidoId]: repartidorId }));
+    onSeleccionarRepartidor?.({ pedidoId, repartidorId });
   }
 
   function asignarPedido(pedidoId) {
@@ -20,7 +32,12 @@ function ListaPedidosDelDia({ pedidos = [], repartidores = [], onAsignar, onCamb
   }
 
   return (
-    <section aria-labelledby="titulo-pedidos-del-dia">
+    <section
+      {...atributosSeccion}
+      id={id}
+      className={className}
+      aria-labelledby="titulo-pedidos-del-dia"
+    >
       <h2 id="titulo-pedidos-del-dia" className="mb-3">Pedidos del día</h2>
       {pedidos.length === 0 ? (
         <p role="status" className="text-muted">No hay pedidos registrados para hoy.</p>
@@ -82,14 +99,14 @@ function ListaPedidosDelDia({ pedidos = [], repartidores = [], onAsignar, onCamb
                           </option>
                         ))}
                       </select>
-                      <button
+                      <Boton
                         type="button"
-                        className="btn btn-outline-primary text-nowrap"
+                        variante="outline-primary"
+                        className="text-nowrap"
+                        texto="Asignar"
                         onClick={() => asignarPedido(pedido.id)}
                         disabled={!asignaciones[pedido.id]}
-                      >
-                        Asignar
-                      </button>
+                      />
                     </div>
                   </td>
                 </tr>

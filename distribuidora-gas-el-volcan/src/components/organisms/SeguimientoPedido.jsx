@@ -1,6 +1,7 @@
 import React from 'react';
+import EtiquetaEstadoPedido from '../atoms/EtiquetaEstadoPedido';
 
-const estados = [
+const estadosPorDefecto = [
   { valor: 'pendiente', texto: 'Pendiente' },
   { valor: 'asignado', texto: 'Asignado a repartidor' },
   { valor: 'en_camino', texto: 'En camino' },
@@ -15,9 +16,12 @@ function normalizarEstado(estado = '') {
     .replace(/\s+/g, '_');
 }
 
-function SeguimientoPedido({ pedido }) {
+function SeguimientoPedido(props) {
+  const { pedido, estados = estadosPorDefecto, id, className, ...atributosSeccion } = props;
   if (!pedido) {
-    return <p role="status">No hay un pedido para mostrar.</p>;
+    return <p {...atributosSeccion} id={id} className={className} role="status">
+      No hay un pedido para mostrar.
+    </p>;
   }
 
   const estadoActual = normalizarEstado(pedido.estado);
@@ -27,13 +31,18 @@ function SeguimientoPedido({ pedido }) {
     || 'Estado no informado';
 
   return (
-    <section aria-labelledby="titulo-seguimiento">
+    <section
+      {...atributosSeccion}
+      id={id}
+      className={className}
+      aria-labelledby="titulo-seguimiento"
+    >
       <div className="d-flex flex-wrap justify-content-between align-items-start gap-2 mb-3">
         <div>
           <h2 id="titulo-seguimiento" className="h4 mb-1">Seguimiento de pedido</h2>
           {pedido.id && <p className="text-muted mb-0">Pedido #{pedido.id}</p>}
         </div>
-        <span className="badge text-bg-primary">{etiquetaEstado}</span>
+        <EtiquetaEstadoPedido estado={etiquetaEstado} />
       </div>
       <ol className="list-group list-group-numbered">
         {estados.map((estado, indice) => {

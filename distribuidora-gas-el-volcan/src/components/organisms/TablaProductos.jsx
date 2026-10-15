@@ -1,10 +1,16 @@
 import React from 'react';
 import Precio from '../atoms/Precio';
-import { productosCatalogo } from '../../data/productos';
 
-function TablaProductos({ productos = productosCatalogo }) {
+function TablaProductos(props) {
+  const { productos = [], id, className, ...atributosSeccion } = props;
+
   return (
-    <section aria-labelledby="titulo-tabla-productos">
+    <section
+      {...atributosSeccion}
+      id={id}
+      className={className}
+      aria-labelledby="titulo-tabla-productos"
+    >
       <h2 id="titulo-tabla-productos" className="mb-3">Productos y stock</h2>
       <div className="table-responsive">
         <table className="table table-striped align-middle">

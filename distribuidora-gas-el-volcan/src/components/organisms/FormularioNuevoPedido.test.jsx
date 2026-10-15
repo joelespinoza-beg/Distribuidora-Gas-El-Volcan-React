@@ -1,11 +1,12 @@
 import React from 'react';
 import { fireEvent, render, screen } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
+import { productosCilindros } from '../../data/productos';
 import FormularioNuevoPedido from './FormularioNuevoPedido';
 
 describe('FormularioNuevoPedido', () => {
   it('muestra los campos del pedido y calcula el precio residencial del catálogo', () => {
-    render(<FormularioNuevoPedido />);
+    render(<FormularioNuevoPedido productos={productosCilindros} />);
 
     fireEvent.change(screen.getByLabelText('Cilindro de gas'), {
       target: { value: 'CL002' }
@@ -17,7 +18,9 @@ describe('FormularioNuevoPedido', () => {
 
   it('envía los datos del cliente, el producto, el total y pago en efectivo', () => {
     const onEnviar = vi.fn();
-    render(<FormularioNuevoPedido onEnviar={onEnviar} />);
+    render(
+      <FormularioNuevoPedido productos={productosCilindros} onEnviar={onEnviar} />
+    );
 
     fireEvent.change(screen.getByLabelText('Nombre del cliente'), {
       target: { value: 'Ana Pérez' }

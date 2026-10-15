@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { productosCilindros } from '../../data/productos';
+import Boton from '../atoms/Boton';
 
 const zonasDespacho = [
   'Zona Centro',
@@ -9,7 +9,17 @@ const zonasDespacho = [
   'Zona Comercial'
 ];
 
-function FormularioNuevoPedido({ productos = productosCilindros, onEnviar }) {
+function FormularioNuevoPedido(props) {
+  const {
+    productos = [],
+    zonasDespacho: zonas = zonasDespacho,
+    onEnviar,
+    textoBoton,
+    claseBoton,
+    id,
+    className,
+    ...atributosSeccion
+  } = props;
   const [formulario, setFormulario] = useState({
     cliente: '',
     telefono: '',
@@ -51,7 +61,12 @@ function FormularioNuevoPedido({ productos = productosCilindros, onEnviar }) {
   }
 
   return (
-    <section aria-labelledby="titulo-nuevo-pedido">
+    <section
+      {...atributosSeccion}
+      id={id}
+      className={className}
+      aria-labelledby="titulo-nuevo-pedido"
+    >
       <h2 id="titulo-nuevo-pedido" className="mb-4">Solicitar un pedido</h2>
       <form onSubmit={enviar} className="row g-3">
         <div className="col-12 col-md-6">
@@ -102,7 +117,7 @@ function FormularioNuevoPedido({ productos = productosCilindros, onEnviar }) {
             required
           >
             <option value="">Selecciona una zona</option>
-            {zonasDespacho.map((zona) => <option key={zona}>{zona}</option>)}
+            {zonas.map((zona) => <option key={zona}>{zona}</option>)}
           </select>
         </div>
         <div className="col-12 col-md-4">
@@ -154,7 +169,11 @@ function FormularioNuevoPedido({ productos = productosCilindros, onEnviar }) {
           <p className="mb-0" aria-live="polite">
             Total estimado: <strong>${totalFormateado(precioUnitario * formulario.cantidad)}</strong>
           </p>
-          <button type="submit" className="btn btn-primary">Confirmar pedido</button>
+          <Boton
+            type="submit"
+            texto={textoBoton || 'Confirmar pedido'}
+            className={claseBoton}
+          />
         </div>
       </form>
     </section>

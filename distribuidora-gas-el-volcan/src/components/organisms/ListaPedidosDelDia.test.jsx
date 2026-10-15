@@ -15,17 +15,29 @@ const repartidores = [{ id: 3, nombre: 'Carlos Soto' }];
 describe('ListaPedidosDelDia', () => {
   it('muestra pedidos y permite asignar un repartidor', () => {
     const onAsignar = vi.fn();
-    render(
+    const onSeleccionarRepartidor = vi.fn();
+    const props = {
+      pedidos,
+      repartidores,
+      onSeleccionarRepartidor,
+      onAsignar
+    };
+    const { rerender } = render(
       <ListaPedidosDelDia
-        pedidos={pedidos}
-        repartidores={repartidores}
-        onAsignar={onAsignar}
+        {...props}
+        asignaciones={{}}
       />
     );
 
     fireEvent.change(screen.getByLabelText('Repartidor del pedido 17'), {
       target: { value: '3' }
     });
+    expect(onSeleccionarRepartidor).toHaveBeenCalledWith({
+      pedidoId: 17,
+      repartidorId: '3'
+    });
+
+    rerender(<ListaPedidosDelDia {...props} asignaciones={{ 17: '3' }} />);
     fireEvent.click(screen.getByRole('button', { name: 'Asignar' }));
 
     expect(screen.getByText('María González')).toBeInTheDocument();

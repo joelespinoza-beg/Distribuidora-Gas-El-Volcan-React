@@ -26,14 +26,17 @@ const pedidos = [
 describe('ListaEntregas', () => {
   it('muestra solamente las entregas del repartidor y permite avanzar su estado', () => {
     const onCambiarEstado = vi.fn();
-    render(
+    const { getByTestId } = render(
       <ListaEntregas
         pedidos={pedidos}
         repartidorId={2}
         onCambiarEstado={onCambiarEstado}
+        data-testid="lista-entregas"
+        className="entregas-personalizadas"
       />
     );
 
+    expect(getByTestId('lista-entregas')).toHaveClass('entregas-personalizadas');
     expect(screen.getByText('Pedro Díaz')).toBeInTheDocument();
     expect(screen.queryByText('Otra persona')).not.toBeInTheDocument();
     fireEvent.click(screen.getByRole('button', { name: 'Marcar en camino' }));
