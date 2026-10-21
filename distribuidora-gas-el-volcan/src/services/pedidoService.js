@@ -30,8 +30,15 @@ export function obtenerPedido(id) {
 export function crearPedido(datos) {
   const lista = leer();
   const nuevoId = Math.max(0, ...lista.map((p) => p.id)) + 1;
+  const productos = datos.productos ?? [{
+    id: datos.producto?.id,
+    nombre: datos.producto?.nombre ?? datos.producto,
+    cantidad: datos.cantidad,
+    precioUnitario: datos.precioUnitario
+  }];
   const nuevo = {
     ...datos,
+    productos,
     id: nuevoId,
     estado: 'pendiente',
     repartidorId: null,

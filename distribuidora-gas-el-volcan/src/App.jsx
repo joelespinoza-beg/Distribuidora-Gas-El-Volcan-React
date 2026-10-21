@@ -11,6 +11,11 @@ import SeguimientoPedido from './pages/SeguimientoPedido';
 import Operadora from './pages/Operadora';
 import Repartidor from './pages/Repartidor';
 import AdminProductos from './pages/AdminProductos';
+import Nosotros from './pages/Nosotros';
+import Blog from './pages/Blog';
+import Ofertas from './pages/Ofertas';
+import Carrito from './pages/Carrito';
+import Checkout from './pages/Checkout';
 import NoEncontrada from './pages/NoEncontrada';
 
 // Mapa de rutas: para cada dirección, qué página se dibuja.
@@ -22,6 +27,12 @@ function App() {
         <Route path="/" element={<Inicio />} />
         <Route path="/catalogo" element={<Catalogo />} />
         <Route path="/categorias" element={<Categorias />} />
+        <Route path="/nosotros" element={<Nosotros />} />
+        <Route path="/blog" element={<Blog />} />
+        <Route path="/blog/:id" element={<Blog />} />
+        <Route path="/ofertas" element={<Ofertas />} />
+        <Route path="/carrito" element={<Carrito />} />
+        <Route path="/checkout" element={<Checkout />} />
         <Route path="/producto/:id" element={<Producto />} />
         <Route path="/login" element={<Login />} />
         <Route path="/registro" element={<Registro />} />

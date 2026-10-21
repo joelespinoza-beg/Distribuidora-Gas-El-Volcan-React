@@ -57,8 +57,10 @@ function ListaEntregas(props) {
                   <p className="mb-1"><strong>{pedido.cliente}</strong></p>
                   <p className="mb-1">{pedido.direccion}</p>
                   <p className="text-muted mb-3">
-                    {pedido.producto?.nombre || pedido.producto}
-                    {pedido.cantidad ? ` · Cantidad: ${pedido.cantidad}` : ''}
+                    {(pedido.productos || [{
+                      nombre: pedido.producto?.nombre || pedido.producto,
+                      cantidad: pedido.cantidad
+                    }]).map((producto) => `${producto.cantidad} × ${producto.nombre}`).join(', ')}
                   </p>
                   {!entregado && (
                     <Boton

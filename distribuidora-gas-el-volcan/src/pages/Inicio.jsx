@@ -1,15 +1,18 @@
-import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import PlantillaPublica from '../components/templates/PlantillaPublica';
 import CatalogoGas from '../components/organisms/CatalogoGas';
 import Boton from '../components/atoms/Boton';
 import { useProductos } from '../context/ProductosContext';
+import { useCarrito } from '../context/CarritoContext';
 import { precioSegunCliente } from '../utils/precios';
 import { useTituloPagina } from '../hooks/useTituloPagina';
 
 function Inicio() {
   const navigate = useNavigate();
   const { productos } = useProductos();
+  const { agregar } = useCarrito();
+  const [mensaje, setMensaje] = useState('');
 
   useTituloPagina('Inicio');
 
@@ -18,7 +21,8 @@ function Inicio() {
     .filter((producto) => producto.categoria === 'Cilindros de Gas')
     .map((producto) => ({
       ...producto,
-      precio: precioSegunCliente(producto, 'residencial')
+      precio: precioSegunCliente(producto, 'residencial'),
+      tipoCliente: 'residencial'
     }));
 
   return (
@@ -88,15 +92,63 @@ function Inicio() {
         </div>
       </div>
 
+      <section className="container pb-5" aria-labelledby="descubre-volcan">
+        <h2 id="descubre-volcan" className="h3 fw-bold text-center mb-4">
+          Descubre más de Gas El Volcán
+        </h2>
+        <div className="row g-4">
+          <div className="col-md-6">
+            <article className="card h-100 border-0 shadow-sm">
+              <div className="card-body p-4">
+                <h3 className="h5 fw-bold">Ofertas para tu hogar</h3>
+                <p className="text-muted">
+                  Revisa los productos destacados y encuentra una opción conveniente.
+                </p>
+                <Boton texto="Ver ofertas" onClick={() => navigate('/ofertas')} />
+              </div>
+            </article>
+          </div>
+          <div className="col-md-6">
+            <article className="card h-100 border-0 shadow-sm">
+              <div className="card-body p-4">
+                <h3 className="h5 fw-bold">¿Tienes dudas?</h3>
+                <p className="text-muted">
+                  Conoce nuestra distribuidora y encuentra nuestros datos de contacto.
+                </p>
+                <Boton
+                  texto="Nosotros y contacto"
+                  variante="outline-primary"
+                  onClick={() => navigate('/nosotros')}
+                />
+              </div>
+            </article>
+          </div>
+        </div>
+        <p className="text-center text-muted small mt-4 mb-0">
+          También puedes revisar nuestros{' '}
+          <Link to="/blog">
+            consejos y novedades
+          </Link>.
+        </p>
+      </section>
+
       <div className="bg-light py-5">
         <div className="container py-4">
+          {mensaje && <p className="alert alert-success" role="status">{mensaje}</p>}
           <p className="text-muted text-center mb-5">
             Elige el formato que mejor se adapte a tu hogar o negocio
           </p>
           <CatalogoGas
             cilindros={cilindros}
-            textoBoton="Pedir"
-            onAgregar={() => navigate('/pedido/nuevo')}
+            textoBoton="Agregar al carrito"
+            onAgregar={(producto) => {
+              try {
+                agregar(producto, producto.precio, producto.tipoCliente);
+                setMensaje(`${producto.nombre} se agregó al carrito.`);
+              } catch (fallo) {
+                setMensaje(fallo.message);
+              }
+            }}
             onVer={(producto) => navigate(`/producto/${producto.id}`)}
           />
         </div>

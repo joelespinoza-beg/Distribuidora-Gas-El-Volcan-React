@@ -20,6 +20,7 @@ function CatalogoGas({
               textoBoton={textoBoton}
               onAgregar={onAgregar}
               onVer={onVer}
+              disabled={cilindro.stock !== undefined && cilindro.stock < 1}
             />
           </div>
         ))}

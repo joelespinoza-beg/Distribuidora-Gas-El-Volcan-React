@@ -1,60 +1,53 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import PlantillaPublica from '../components/templates/PlantillaPublica';
-import FormularioNuevoPedido from '../components/organisms/FormularioNuevoPedido';
+import CatalogoGas from '../components/organisms/CatalogoGas';
+import Boton from '../components/atoms/Boton';
 import { useProductos } from '../context/ProductosContext';
-import { usePedidos } from '../context/PedidosContext';
+import { useCarrito } from '../context/CarritoContext';
+import { precioSegunCliente } from '../utils/precios';
 import { useTituloPagina } from '../hooks/useTituloPagina';
 
-// Página: el cliente pide gas. Decide qué pasa cuando el formulario avisa que está completo.
 function NuevoPedido() {
   const navigate = useNavigate();
-  const { productos, actualizar } = useProductos();
-  const { crear } = usePedidos();
+  const { productos } = useProductos();
+  const { agregar } = useCarrito();
+  const [mensaje, setMensaje] = useState('');
+  const [error, setError] = useState('');
 
   useTituloPagina('Nuevo pedido');
 
-  const cilindros = productos.filter((producto) => producto.categoria === 'Cilindros de Gas');
-
-  function manejarEnvio(datos) {
-    const producto = productos.find((item) => item.id === datos.productoId);
-
-    // Camino con error: no hay producto o no alcanza el stock
-    if (!producto || datos.cantidad > producto.stock) {
-      navigate('/pedido/resultado', {
-        state: { motivo: 'No hay stock suficiente para completar tu pedido.' }
-      });
-      return;
-    }
-
-    try {
-      const pedido = crear({
-        cliente: datos.cliente,
-        telefono: datos.telefono,
-        direccion: datos.direccion,
-        zona: datos.zona,
-        tipoCliente: datos.tipoCliente,
-        producto: { id: producto.id, nombre: producto.nombre },
-        cantidad: datos.cantidad,
-        precioUnitario: datos.precioUnitario,
-        total: datos.total,
-        metodoPago: datos.metodoPago
-      });
-
-      // Se descuenta el stock y se muestra la pantalla de éxito
-      actualizar(producto.id, { stock: producto.stock - datos.cantidad });
-      navigate(`/pedido/resultado/${pedido.id}`);
-    } catch {
-      navigate('/pedido/resultado', {
-        state: { motivo: 'Ocurrió un problema al registrar el pedido.' }
-      });
-    }
-  }
+  const productosParaPedido = productos.map((producto) => ({
+    ...producto,
+    precio: precioSegunCliente(producto, 'residencial'),
+    tipoCliente: 'residencial'
+  }));
 
   return (
     <PlantillaPublica>
       <div className="container py-4">
-        <FormularioNuevoPedido productos={cilindros} onEnviar={manejarEnvio} />
+        <h1 className="h2">Iniciar solicitud</h1>
+        <p className="text-muted">Selecciona productos; podrás revisar y editar la solicitud antes de confirmarla.</p>
+        {mensaje && <p className="alert alert-success" role="status">{mensaje}</p>}
+        {error && <p className="alert alert-danger" role="alert">{error}</p>}
+        <CatalogoGas
+          titulo="Productos disponibles"
+          textoBoton="Agregar"
+          cilindros={productosParaPedido}
+          onAgregar={(producto) => {
+            try {
+              agregar(producto, producto.precio, producto.tipoCliente);
+              setError('');
+              setMensaje(`${producto.nombre} se agregó a la solicitud.`);
+            } catch (fallo) {
+              setMensaje('');
+              setError(fallo.message);
+            }
+          }}
+        />
+        <div className="mt-4">
+          <Boton texto="Revisar solicitud" onClick={() => navigate('/carrito')} />
+        </div>
       </div>
     </PlantillaPublica>
   );

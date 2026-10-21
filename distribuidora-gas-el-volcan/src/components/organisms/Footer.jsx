@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 const infoPorDefecto = {
   nombre: 'Distribuidora de Gas El Volcán',
@@ -25,6 +26,9 @@ function Footer(props) {
         </p>
         <p className="small mb-3">
           Horarios: {info.horarios.join(' | ')}
+        </p>
+        <p className="small mb-3">
+          <Link className="link-light" to="/blog">Consejos y novedades</Link>
         </p>
         <p className="small text-secondary mb-0">
           &copy; {anio} {info.nombre}. Todos los derechos reservados.

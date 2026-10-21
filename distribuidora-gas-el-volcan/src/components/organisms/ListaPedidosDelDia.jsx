@@ -62,7 +62,11 @@ function ListaPedidosDelDia(props) {
                     <strong>{pedido.cliente}</strong>
                     <span className="d-block small text-muted">{pedido.direccion}</span>
                   </td>
-                  <td>{pedido.producto?.nombre || pedido.producto}</td>
+                  <td>
+                    {(pedido.productos || [{ nombre: pedido.producto?.nombre || pedido.producto }])
+                      .map((producto) => producto.nombre)
+                      .join(', ')}
+                  </td>
                   <td>
                     <label className="visually-hidden" htmlFor={`estado-${pedido.id}`}>
                       Estado del pedido {pedido.id}

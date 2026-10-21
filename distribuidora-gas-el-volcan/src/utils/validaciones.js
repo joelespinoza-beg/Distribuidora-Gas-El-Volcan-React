@@ -33,6 +33,21 @@ export function validarEmail(valor) {
   return '';
 }
 
+export function validarTelefono(valor) {
+  const obligatorio = validarObligatorio(valor, 'Ingresa tu teléfono');
+  if (obligatorio) return obligatorio;
+  if (!/^[+\d\s().-]+$/.test(valor.trim())) {
+    return 'Ingresa un teléfono válido (entre 8 y 15 dígitos)';
+  }
+
+  const digitos = valor.replace(/\D/g, '');
+  if (digitos.length < 8 || digitos.length > 15) {
+    return 'Ingresa un teléfono válido (entre 8 y 15 dígitos)';
+  }
+
+  return '';
+}
+
 export function validarClave(valor) {
   const obligatorio = validarObligatorio(valor, 'Ingresa tu clave');
   if (obligatorio) return obligatorio;

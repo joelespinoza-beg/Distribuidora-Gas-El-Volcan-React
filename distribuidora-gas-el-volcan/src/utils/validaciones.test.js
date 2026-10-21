@@ -4,6 +4,7 @@ import {
   validarEmail,
   validarClave,
   validarNumero,
+  validarTelefono,
   validarConfirmacion
 } from './validaciones'
 
@@ -69,5 +70,16 @@ describe('validarConfirmacion', () => {
 
   it('acepta una confirmación igual a la clave', () => {
     expect(validarConfirmacion('123456', '123456')).toBe('')
+  })
+})
+
+describe('validarTelefono', () => {
+  it('acepta teléfonos con entre 8 y 15 dígitos', () => {
+    expect(validarTelefono('+56 9 1234-5678')).toBe('')
+  })
+
+  it('rechaza teléfonos demasiado cortos o con letras', () => {
+    expect(validarTelefono('123')).toContain('teléfono válido')
+    expect(validarTelefono('12345678abc')).toContain('teléfono válido')
   })
 })

@@ -49,7 +49,13 @@ function PedidoConfirmadoONoRealizado() {
         <ul className="list-unstyled mb-4">
           <li>Cliente: <strong>{pedido.cliente}</strong></li>
           <li>Dirección: {pedido.direccion} ({pedido.zona})</li>
-          <li>Producto: {pedido.producto.nombre} · Cantidad: {pedido.cantidad}</li>
+          <li>
+            Productos:{' '}
+            {(pedido.productos || [{
+              nombre: pedido.producto?.nombre ?? pedido.producto,
+              cantidad: pedido.cantidad
+            }]).map((producto) => `${producto.cantidad} × ${producto.nombre}`).join(', ')}
+          </li>
           <li>Total: <Precio valor={pedido.total} /></li>
           <li>Pago: {pedido.metodoPago}</li>
         </ul>

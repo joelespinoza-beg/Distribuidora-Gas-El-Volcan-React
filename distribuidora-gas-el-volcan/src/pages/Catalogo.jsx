@@ -6,6 +6,7 @@ import SelectorTipoClient from '../components/molecules/SelectorTipoClient';
 import CampoSelector from '../components/molecules/CampoSelector';
 import CampoFormulario from '../components/molecules/CampoFormulario';
 import { useProductos } from '../context/ProductosContext';
+import { useCarrito } from '../context/CarritoContext';
 import { precioSegunCliente } from '../utils/precios';
 import { useTituloPagina } from '../hooks/useTituloPagina';
 
@@ -13,6 +14,7 @@ function Catalogo() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const { productos } = useProductos();
+  const { agregar } = useCarrito();
 
   // Estado de los filtros
   const [tipoCliente, setTipoCliente] = useState('residencial');
@@ -20,6 +22,8 @@ function Catalogo() {
     () => searchParams.get('categoria') || 'todas'
   );
   const [busqueda, setBusqueda] = useState('');
+  const [mensaje, setMensaje] = useState('');
+  const [errorCarrito, setErrorCarrito] = useState('');
 
   useTituloPagina('Catálogo');
 
@@ -45,6 +49,8 @@ function Catalogo() {
   return (
     <PlantillaPublica>
       <div className="container py-4">
+        {mensaje && <p className="alert alert-success" role="status">{mensaje}</p>}
+        {errorCarrito && <p className="alert alert-danger" role="alert">{errorCarrito}</p>}
         <div className="row g-3 mb-4">
           <div className="col-12 col-md-4">
             <SelectorTipoClient
@@ -76,9 +82,18 @@ function Catalogo() {
 
         <CatalogoGas
           titulo="Catálogo de productos"
-          textoBoton="Pedir"
+          textoBoton="Agregar al carrito"
           cilindros={visibles}
-          onAgregar={() => navigate('/pedido/nuevo')}
+          onAgregar={(producto) => {
+            try {
+              agregar(producto, producto.precio, producto.tipoCliente);
+              setErrorCarrito('');
+              setMensaje(`${producto.nombre} se agregó al carrito.`);
+            } catch (fallo) {
+              setMensaje('');
+              setErrorCarrito(fallo.message);
+            }
+          }}
           onVer={(producto) => navigate(`/producto/${producto.id}`)}
         />
 
