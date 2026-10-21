@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 
 const enlacesPorDefecto = [
   { id: 'inicio', texto: 'Inicio', ruta: '/' },
-  { id: 'catalogo', texto: 'Catálogo', ruta: '/catalogo' }
+  { id: 'catalogo', texto: 'Catálogo', ruta: '/catalogo' },
+  { id: 'categorias', texto: 'Categorías', ruta: '/categorias' }
 ];
 
 

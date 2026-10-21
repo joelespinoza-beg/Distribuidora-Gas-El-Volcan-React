@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import PlantillaPublica from '../components/templates/PlantillaPublica';
 import CatalogoGas from '../components/organisms/CatalogoGas';
 import SelectorTipoClient from '../components/molecules/SelectorTipoClient';
@@ -11,11 +11,14 @@ import { useTituloPagina } from '../hooks/useTituloPagina';
 
 function Catalogo() {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const { productos } = useProductos();
 
   // Estado de los filtros
   const [tipoCliente, setTipoCliente] = useState('residencial');
-  const [categoria, setCategoria] = useState('todas');
+  const [categoria, setCategoria] = useState(
+    () => searchParams.get('categoria') || 'todas'
+  );
   const [busqueda, setBusqueda] = useState('');
 
   useTituloPagina('Catálogo');

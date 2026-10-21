@@ -1,22 +1,25 @@
 import React from 'react';
 
-function Precio(props) {
-  const valor = props.valor !== undefined ? props.valor : props.monto;
-  const valorFormateado = typeof valor === 'number'
-    ? valor.toLocaleString('es-CL')
-    : valor;
-
+function Selector(props) {
   return (
-    <span
+    <select
       id={props.id}
-      className={(props.className || '').trim()}
+      name={props.name}
+      value={props.value ?? ''}
+      onChange={props.onChange}
+      disabled={props.disabled}
+      required={props.required}
+      className={`form-select ${props.className || ''}`.trim()}
     >
-      {props.moneda || '$'} {valorFormateado}
-      {props.tipoCliente && (
-        <small className="text-muted ms-1">({props.tipoCliente})</small>
-      )}
-    </span>
+      {props.placeholder && <option value="">{props.placeholder}</option>}
+      {(props.opciones || []).map((opcion) => {
+        const valor = typeof opcion === 'string' ? opcion : opcion.valor;
+        const texto = typeof opcion === 'string' ? opcion : opcion.texto;
+
+        return <option key={valor} value={valor}>{texto}</option>;
+      })}
+    </select>
   );
 }
 
-export default Precio;
+export default Selector;
