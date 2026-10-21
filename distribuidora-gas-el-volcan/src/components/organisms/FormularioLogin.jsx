@@ -3,6 +3,7 @@ import Boton from '../atoms/Boton';
 import CampoFormulario from '../molecules/CampoFormulario';
 import { validarEmail, validarClave } from '../../utils/validaciones';
 
+// "error" es un mensaje general que decide la página (por ejemplo: credenciales incorrectas).
 function FormularioLogin(props) {
   // Lo que la persona escribió en cada campo
   const [email, setEmail] = useState('');
@@ -30,15 +31,19 @@ function FormularioLogin(props) {
   }
 
   function enviar(evento) {
+    // 1. Cancela la recarga que el navegador hace por defecto al enviar un formulario
     evento.preventDefault();
 
+    // 2. Valida TODOS los campos, para mostrar todos los errores juntos
     const nuevosErrores = {
       email: validarEmail(email),
       clave: validarClave(clave)
     };
 
+    // 3. Guarda los mensajes en el estado
     setErrores(nuevosErrores);
 
+    // 4. Solo si no hay ningún error, avisa a la página
     const hayErrores = nuevosErrores.email !== '' || nuevosErrores.clave !== '';
     if (!hayErrores) {
       props.onEnviar?.({ email: email.trim(), clave });
@@ -49,6 +54,10 @@ function FormularioLogin(props) {
     <div className="card w-100 p-4 shadow-sm formulario-login">
       {/* noValidate: desactiva los mensajes del navegador para que se vean los de React */}
       <form onSubmit={enviar} noValidate className="d-flex flex-column gap-3">
+        {props.error && (
+          <div className="alert alert-danger mb-0" role="alert">{props.error}</div>
+        )}
+
         <CampoFormulario
           id="email"
           name="email"

@@ -3,17 +3,17 @@ import { useNavigate, useParams } from 'react-router-dom';
 import PlantillaPublica from '../components/templates/PlantillaPublica';
 import Boton from '../components/atoms/Boton';
 import Precio from '../components/atoms/Precio';
-import { cilindros } from '../data/cilindros';
+import { useProductos } from '../context/ProductosContext';
 import { useTituloPagina } from '../hooks/useTituloPagina';
 
-
+// Página: detalle de un producto. Ruta: /producto/:id (el id es el código, por ejemplo CL002)
 function Producto() {
   const navigate = useNavigate();
   const params = useParams();
+  const { productos } = useProductos();
 
-
-  const id = Number(params.id);
-  const producto = cilindros.find((c) => c.id === id);
+  // Los códigos son texto, así que se comparan tal cual (sin Number)
+  const producto = productos.find((item) => item.id === params.id);
 
   useTituloPagina(producto ? producto.nombre : 'Producto no encontrado');
 
@@ -32,13 +32,23 @@ function Producto() {
   return (
     <PlantillaPublica>
       <div className="container py-4">
+        <span className="badge text-bg-secondary mb-2">{producto.categoria}</span>
         <h2>{producto.nombre}</h2>
         <p className="text-muted">{producto.descripcion}</p>
-        <p>Tipo de cliente: {producto.tipoCliente}</p>
-        <p><Precio monto={producto.precio} /></p>
 
-        {/* navigate(-1) vuelve a la página anterior del historial */}
-        <Boton texto="Volver" variante="outline-secondary" onClick={() => navigate(-1)} />
+        <ul className="list-unstyled mb-4">
+          <li>Código: <strong>{producto.id}</strong></li>
+          <li>Unidad: {producto.unidad}</li>
+          <li>Precio residencial: <Precio valor={producto.precioResidencial} /></li>
+          <li>Precio comercial: <Precio valor={producto.precioComercial} /></li>
+          <li>Stock disponible: {producto.stock}</li>
+        </ul>
+
+        <div className="d-flex flex-wrap gap-2">
+          {/* navigate(-1) vuelve a la página anterior del historial */}
+          <Boton texto="Volver" variante="outline-secondary" onClick={() => navigate(-1)} />
+          <Boton texto="Pedir" onClick={() => navigate('/pedido/nuevo')} />
+        </div>
       </div>
     </PlantillaPublica>
   );

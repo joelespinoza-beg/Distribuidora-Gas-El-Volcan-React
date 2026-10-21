@@ -3,17 +3,23 @@ import { useNavigate } from 'react-router-dom';
 import PlantillaPublica from '../components/templates/PlantillaPublica';
 import CatalogoGas from '../components/organisms/CatalogoGas';
 import Boton from '../components/atoms/Boton';
-import { cilindros } from '../data/cilindros';
+import { useProductos } from '../context/ProductosContext';
+import { precioSegunCliente } from '../utils/precios';
 import { useTituloPagina } from '../hooks/useTituloPagina';
 
 function Inicio() {
   const navigate = useNavigate();
+  const { productos } = useProductos();
 
   useTituloPagina('Inicio');
 
-  const handleAgregar = (producto) => {
-    console.log('Agregando al carrito:', producto.nombre);
-  };
+  // En el inicio se muestran solo los cilindros, con precio residencial
+  const cilindros = productos
+    .filter((producto) => producto.categoria === 'Cilindros de Gas')
+    .map((producto) => ({
+      ...producto,
+      precio: precioSegunCliente(producto, 'residencial')
+    }));
 
   return (
     <PlantillaPublica>
@@ -27,8 +33,14 @@ function Inicio() {
               </p>
               <div className="d-flex flex-wrap gap-3">
                 <Boton
-                  texto="Ir al Catálogo"
+                  texto="Pedir gas"
                   variante="light"
+                  className="btn-lg fw-bold"
+                  onClick={() => navigate('/pedido/nuevo')}
+                />
+                <Boton
+                  texto="Ir al Catálogo"
+                  variante="outline-light"
                   className="btn-lg fw-bold"
                   onClick={() => navigate('/catalogo')}
                 />
@@ -83,7 +95,8 @@ function Inicio() {
           </p>
           <CatalogoGas
             cilindros={cilindros}
-            onAgregar={handleAgregar}
+            textoBoton="Pedir"
+            onAgregar={() => navigate('/pedido/nuevo')}
             onVer={(producto) => navigate(`/producto/${producto.id}`)}
           />
         </div>

@@ -1,16 +1,14 @@
 import React from 'react';
+import Boton from '../atoms/Boton';
 import Precio from '../atoms/Precio';
+import { productosCatalogo } from '../../data/productos';
 
-function TablaProductos(props) {
-  const { productos = [], id, className, ...atributosSeccion } = props;
+// Si recibe onEditar y/o onEliminar, agrega una columna de acciones (panel de administración).
+function TablaProductos({ productos = productosCatalogo, onEditar, onEliminar }) {
+  const hayAcciones = Boolean(onEditar || onEliminar);
 
   return (
-    <section
-      {...atributosSeccion}
-      id={id}
-      className={className}
-      aria-labelledby="titulo-tabla-productos"
-    >
+    <section aria-labelledby="titulo-tabla-productos">
       <h2 id="titulo-tabla-productos" className="mb-3">Productos y stock</h2>
       <div className="table-responsive">
         <table className="table table-striped align-middle">
@@ -26,6 +24,7 @@ function TablaProductos(props) {
               <th scope="col">Precio residencial</th>
               <th scope="col">Precio comercial</th>
               <th scope="col">Stock actual</th>
+              {hayAcciones && <th scope="col">Acciones</th>}
             </tr>
           </thead>
           <tbody>
@@ -41,6 +40,28 @@ function TablaProductos(props) {
                 <td><Precio valor={producto.precioResidencial} /></td>
                 <td><Precio valor={producto.precioComercial} /></td>
                 <td>{producto.stock}</td>
+                {hayAcciones && (
+                  <td>
+                    <div className="d-flex flex-wrap gap-2">
+                      {onEditar && (
+                        <Boton
+                          texto="Editar"
+                          variante="outline-primary"
+                          className="btn-sm"
+                          onClick={() => onEditar(producto)}
+                        />
+                      )}
+                      {onEliminar && (
+                        <Boton
+                          texto="Eliminar"
+                          variante="outline-danger"
+                          className="btn-sm"
+                          onClick={() => onEliminar(producto)}
+                        />
+                      )}
+                    </div>
+                  </td>
+                )}
               </tr>
             ))}
           </tbody>
