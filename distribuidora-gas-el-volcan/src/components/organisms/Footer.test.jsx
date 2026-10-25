@@ -16,6 +16,7 @@ describe('Footer', () => {
     expect(screen.getByText(/\(42\) 222 3344/)).toBeInTheDocument()
     expect(screen.getByText(/\+56 9 8765 4321/)).toBeInTheDocument()
     expect(screen.getByRole('link', { name: 'Consejos y novedades' })).toHaveAttribute('href', '/blog')
+    expect(screen.getByRole('link', { name: 'Panel interno' })).toHaveAttribute('href', '/admin/productos')
   })
 
   it('permite personalizar la información mostrada mediante la prop info', () => {
@@ -29,3 +30,4 @@ describe('Footer', () => {
     expect(screen.getByText('Concepción')).toBeInTheDocument()
   })
 })
+

@@ -50,7 +50,15 @@ function ListaEntregas(props) {
                   <div className="d-flex flex-wrap justify-content-between gap-2">
                     <h3 className="h5">Pedido #{pedido.id}</h3>
                     <EtiquetaEstadoPedido
-                      estado={entregado ? 'Entregado' : estado === 'en_camino' ? 'En camino' : 'Pendiente'}
+                      estado={
+                        entregado
+                          ? 'Entregado'
+                          : estado === 'en_camino'
+                            ? 'En camino'
+                            : estado === 'asignado'
+                              ? 'Asignado'
+                              : 'Pendiente'
+                      }
                       className="align-self-start"
                     />
                   </div>

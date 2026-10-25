@@ -39,3 +39,4 @@ describe('ContadorCantidad', () => {
     expect(screen.getByRole('button', { name: '-' })).not.toBeDisabled()
   })
 })
+

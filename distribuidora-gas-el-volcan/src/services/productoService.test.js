@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach, afterEach } from 'vitest'
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
 import { productosCatalogo } from '../data/productos'
 import {
   listarProductos,
@@ -65,5 +65,14 @@ describe('productoService (CRUD con localStorage)', () => {
 
   it('devuelve null si el producto no existe', () => {
     expect(obtenerProducto('NO-EXISTE')).toBeNull()
+  })
+
+  it('persiste los cambios en localStorage usando setItem', () => {
+    const spySetItem = vi.spyOn(Storage.prototype, 'setItem')
+
+    crearProducto(productoNuevo)
+
+    expect(spySetItem).toHaveBeenCalledWith('productos', expect.any(String))
+    spySetItem.mockRestore()
   })
 })

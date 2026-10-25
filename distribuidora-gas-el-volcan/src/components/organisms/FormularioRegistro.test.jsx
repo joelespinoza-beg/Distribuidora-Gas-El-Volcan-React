@@ -47,3 +47,4 @@ describe('FormularioRegistro', () => {
     expect(screen.getByRole('alert')).toHaveTextContent('Ya existe una cuenta con ese correo')
   })
 })
+

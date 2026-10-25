@@ -62,3 +62,4 @@ describe('CampoSelector', () => {
     expect(onChange).toHaveBeenCalledTimes(1)
   })
 })
+

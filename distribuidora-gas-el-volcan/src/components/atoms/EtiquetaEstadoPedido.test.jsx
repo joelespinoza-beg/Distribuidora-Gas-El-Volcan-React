@@ -29,3 +29,4 @@ describe('EtiquetaEstadoPedido', () => {
     expect(etiqueta).toHaveClass('bg-secondary', 'text-white', 'extra')
   })
 })
+

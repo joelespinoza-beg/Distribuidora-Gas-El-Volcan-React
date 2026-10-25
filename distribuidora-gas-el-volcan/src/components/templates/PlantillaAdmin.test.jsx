@@ -19,3 +19,4 @@ describe('PlantillaAdmin', () => {
     expect(screen.getByRole('heading', { name: 'Vista de operadora' })).toBeInTheDocument()
   })
 })
+

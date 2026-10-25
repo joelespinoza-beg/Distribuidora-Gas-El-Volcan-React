@@ -55,3 +55,4 @@ describe('CampoFormulario', () => {
     expect(onChange).toHaveBeenCalledTimes(1)
   })
 })
+

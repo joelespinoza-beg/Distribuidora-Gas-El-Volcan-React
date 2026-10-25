@@ -38,3 +38,4 @@ describe('FormularioLogin', () => {
     expect(screen.getByRole('alert')).toHaveTextContent('Correo o clave incorrectos')
   })
 })
+

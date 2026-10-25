@@ -21,3 +21,4 @@ describe('PlantillaPublica', () => {
     expect(screen.getByText('Distribuidora de Gas El Volcán')).toBeInTheDocument()
   })
 })
+

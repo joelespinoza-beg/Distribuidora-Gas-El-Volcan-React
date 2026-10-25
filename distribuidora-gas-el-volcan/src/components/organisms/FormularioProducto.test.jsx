@@ -72,3 +72,4 @@ describe('FormularioProducto', () => {
     expect(onCancelar).toHaveBeenCalledTimes(1)
   })
 })
+

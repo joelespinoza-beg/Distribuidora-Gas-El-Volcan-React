@@ -14,3 +14,4 @@ describe('SeccionLogin', () => {
     expect(onRegistro).toHaveBeenCalledTimes(1)
   })
 })
+

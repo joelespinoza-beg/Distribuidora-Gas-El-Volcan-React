@@ -3,6 +3,7 @@ import React from 'react';
 const estilosPorEstado = {
   'Pendiente': 'bg-warning text-dark',
   'Asignado': 'bg-info text-dark',
+  'Asignado a repartidor': 'bg-info text-dark',
   'En camino': 'bg-primary text-white',
   'Entregado': 'bg-success text-white',
   'Cancelado': 'bg-danger text-white'

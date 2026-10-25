@@ -53,11 +53,17 @@ src/
 │       └── PlantillaPublica.jsx
 ├── pages/
 │   ├── AdminProductos.jsx
+│   ├── Blog.jsx
+│   ├── Carrito.jsx
 │   ├── Catalogo.jsx
+│   ├── Categorias.jsx
+│   ├── Checkout.jsx
 │   ├── Inicio.jsx
 │   ├── Login.jsx
 │   ├── NoEncontrada.jsx
+│   ├── Nosotros.jsx
 │   ├── NuevoPedido.jsx
+│   ├── Ofertas.jsx
 │   ├── Operadora.jsx
 │   ├── PedidoConfirmadoONoRealizado.jsx
 │   ├── Producto.jsx
@@ -65,15 +71,18 @@ src/
 │   ├── Repartidor.jsx
 │   └── SeguimientoPedido.jsx
 ├── context/
+│   ├── CarritoContext.jsx
 │   ├── PedidosContext.jsx
 │   └── ProductosContext.jsx
 ├── data/
+│   ├── articulosBlog.js
 │   ├── cilindros.js
 │   ├── productos.js
 │   └── repartidores.js
 ├── hooks/
 │   └── useTituloPagina.js
 ├── services/
+│   ├── carritoService.js
 │   ├── pedidoService.js
 │   ├── productoService.js
 │   └── usuarioService.js
@@ -83,7 +92,8 @@ src/
 ├── styles/
 │   └── componentes.css
 ├── App.jsx
-└── main.jsx
+├── main.jsx
+└── setupTests.js
 ```
 
 Las pruebas unitarias (`*.test.js` y `*.test.jsx`) están junto al archivo que prueban.
@@ -94,11 +104,17 @@ Las pruebas unitarias (`*.test.js` y `*.test.jsx`) están junto al archivo que p
 |---|---|
 | `/` | Inicio |
 | `/catalogo` | Catálogo con filtros |
+| `/categorias` | Categorías de productos |
+| `/ofertas` | Ofertas y promociones |
+| `/nosotros` | Nosotros y contacto |
+| `/blog` y `/blog/:id` | Consejos y novedades |
+| `/carrito` | Solicitud en curso (carrito) |
+| `/checkout` | Confirmar solicitud y despacho |
 | `/producto/:id` | Detalle de un producto |
 | `/login` y `/registro` | Ingreso y creación de cuenta |
 | `/pedido/nuevo` | Solicitar un pedido |
-| `/pedido/resultado` | Pedido confirmado o no realizado |
-| `/seguimiento` | Seguimiento del pedido |
+| `/pedido/resultado` y `/pedido/resultado/:id` | Pedido confirmado o no realizado |
+| `/seguimiento` y `/seguimiento/:id` | Seguimiento del pedido |
 | `/operadora` | Operadora: pedidos del día |
 | `/repartidor` | Repartidor: mis entregas |
 | `/admin/productos` | Administración de productos (CRUD) |
@@ -108,18 +124,20 @@ Las pruebas unitarias (`*.test.js` y `*.test.jsx`) están junto al archivo que p
 - React + Vite
 - React Router
 - Bootstrap
-- Vitest y Testing Library (pruebas unitarias)
+- Vitest y Testing Library (pruebas unitarias y cobertura)
 
 ## Comandos para usar el proyecto
 
 ```bash
+cd distribuidora-gas-el-volcan
 npm install
 npm run dev
 ```
 
-Para ejecutar las pruebas:
+Para ejecutar las pruebas y cobertura:
 
 ```bash
+npm test
 npm run test:run
 npm run test:cov
 ```

@@ -29,6 +29,8 @@ function Footer(props) {
         </p>
         <p className="small mb-3">
           <Link className="link-light" to="/blog">Consejos y novedades</Link>
+          {' | '}
+          <Link className="link-light" to="/admin/productos">Panel interno</Link>
         </p>
         <p className="small text-secondary mb-0">
           &copy; {anio} {info.nombre}. Todos los derechos reservados.

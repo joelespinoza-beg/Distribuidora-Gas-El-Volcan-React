@@ -44,3 +44,4 @@ describe('TarjetaProducto', () => {
     expect(screen.getByRole('button', { name: 'Agregar' })).toBeDisabled()
   })
 })
+

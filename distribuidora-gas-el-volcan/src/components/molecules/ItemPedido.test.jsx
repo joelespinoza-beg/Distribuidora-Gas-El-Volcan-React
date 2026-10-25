@@ -40,3 +40,4 @@ describe('ItemPedido', () => {
     expect(screen.getByRole('button', { name: 'Ver detalle' })).toBeInTheDocument()
   })
 })
+
