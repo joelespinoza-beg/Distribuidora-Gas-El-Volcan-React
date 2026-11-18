@@ -6,9 +6,9 @@ import Precio from '../components/atoms/Precio';
 import { usePedidos } from '../context/PedidosContext';
 import { useTituloPagina } from '../hooks/useTituloPagina';
 
-// Página: resultado del pedido.
-//   /pedido/resultado/:id  -> pedido confirmado (se busca por su número)
-//   /pedido/resultado      -> pedido no realizado (el motivo llega en location.state)
+
+
+
 function PedidoConfirmadoONoRealizado() {
   const navigate = useNavigate();
   const params = useParams();

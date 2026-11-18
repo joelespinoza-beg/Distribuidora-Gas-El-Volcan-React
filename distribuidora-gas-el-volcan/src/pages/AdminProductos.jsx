@@ -6,13 +6,13 @@ import Boton from '../components/atoms/Boton';
 import { useProductos } from '../context/ProductosContext';
 import { useTituloPagina } from '../hooks/useTituloPagina';
 
-// Página del administrador: CRUD de productos (listar, crear, editar y eliminar).
+
 function AdminProductos() {
   const { productos, crear, actualizar, eliminar } = useProductos();
 
   const [formularioAbierto, setFormularioAbierto] = useState(false);
-  const [enEdicion, setEnEdicion] = useState(null); // producto que se edita (null = nuevo)
-  const [aEliminar, setAEliminar] = useState(null); // producto pendiente de confirmar
+  const [enEdicion, setEnEdicion] = useState(null);
+  const [aEliminar, setAEliminar] = useState(null);
   const [mensaje, setMensaje] = useState('');
   const [error, setError] = useState('');
 
@@ -49,7 +49,7 @@ function AdminProductos() {
       setError('');
       cerrarFormulario();
     } catch (fallo) {
-      // Por ejemplo: ya existe un producto con ese código
+
       setError(fallo.message);
     }
   }

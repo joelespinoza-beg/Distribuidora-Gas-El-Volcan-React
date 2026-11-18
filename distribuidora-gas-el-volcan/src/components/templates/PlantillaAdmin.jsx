@@ -3,8 +3,8 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import Navbar from '../organisms/Navbar';
 import Footer from '../organisms/Footer';
 
-// Esqueleto de las páginas del panel (administrador, operadora y repartidor).
-// Reutiliza el Navbar con otros enlaces; como PlantillaPublica, es quien usa el router.
+
+
 const enlacesAdmin = [
   { id: 'productos', texto: 'Productos', ruta: '/admin/productos' },
   { id: 'pedidos', texto: 'Pedidos del día', ruta: '/operadora' },

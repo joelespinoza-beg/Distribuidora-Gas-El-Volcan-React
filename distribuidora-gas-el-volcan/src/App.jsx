@@ -18,8 +18,8 @@ import Carrito from './pages/Carrito';
 import Checkout from './pages/Checkout';
 import NoEncontrada from './pages/NoEncontrada';
 
-// Mapa de rutas: para cada dirección, qué página se dibuja.
-// Un ":" en el path crea un parámetro (en /producto/CL002, id vale "CL002").
+
+
 function App() {
   return (
     <BrowserRouter>

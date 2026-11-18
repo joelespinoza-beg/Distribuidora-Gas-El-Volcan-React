@@ -7,7 +7,7 @@ import Boton from '../components/atoms/Boton';
 import { usePedidos } from '../context/PedidosContext';
 import { useTituloPagina } from '../hooks/useTituloPagina';
 
-// Página: seguimiento. Rutas: /seguimiento (buscar) y /seguimiento/:id (ver un pedido)
+
 function Seguimiento() {
   const navigate = useNavigate();
   const params = useParams();

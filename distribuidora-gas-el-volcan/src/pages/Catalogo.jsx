@@ -16,7 +16,7 @@ function Catalogo() {
   const { productos } = useProductos();
   const { agregar } = useCarrito();
 
-  // Estado de los filtros
+
   const [tipoCliente, setTipoCliente] = useState('residencial');
   const [categoria, setCategoria] = useState(
     () => searchParams.get('categoria') || 'todas'
@@ -33,8 +33,8 @@ function Catalogo() {
     ...categorias.map((nombre) => ({ valor: nombre, texto: nombre }))
   ];
 
-  // Se filtra por categoría y por texto, y a cada producto se le asigna el
-  // precio que corresponde al tipo de cliente elegido.
+
+
   const visibles = productos
     .filter((producto) => categoria === 'todas' || producto.categoria === categoria)
     .filter((producto) =>

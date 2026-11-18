@@ -46,5 +46,11 @@ describe('FormularioRegistro', () => {
 
     expect(screen.getByRole('alert')).toHaveTextContent('Ya existe una cuenta con ese correo')
   })
+
+  it('desactiva el envío mientras la solicitud está en curso', () => {
+    render(<FormularioRegistro cargando />)
+
+    expect(screen.getByRole('button', { name: 'Creando cuenta...' })).toBeDisabled()
+  })
 })
 

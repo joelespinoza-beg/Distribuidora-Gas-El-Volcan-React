@@ -5,7 +5,7 @@ import { usePedidos } from '../context/PedidosContext';
 import { repartidores } from '../data/repartidores';
 import { useTituloPagina } from '../hooks/useTituloPagina';
 
-// Página de la operadora: ve los pedidos, asigna repartidor y cambia estados.
+
 function Operadora() {
   const { pedidos, asignar, cambiarEstado } = usePedidos();
   const [asignaciones, setAsignaciones] = useState({});

@@ -6,7 +6,7 @@ import { usePedidos } from '../context/PedidosContext';
 import { repartidores } from '../data/repartidores';
 import { useTituloPagina } from '../hooks/useTituloPagina';
 
-// Página del repartidor: elige quién es (simulado) y ve sus entregas asignadas.
+
 function Repartidor() {
   const { pedidos, cambiarEstado } = usePedidos();
   const [repartidorId, setRepartidorId] = useState(repartidores[0].id);

@@ -1,4 +1,4 @@
-// Lista única de cilindros: la usan Inicio y Catálogo
+
 export const cilindros = [
   {
     id: 1,

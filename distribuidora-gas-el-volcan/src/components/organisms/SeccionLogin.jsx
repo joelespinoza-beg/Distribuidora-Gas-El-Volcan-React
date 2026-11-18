@@ -2,8 +2,8 @@ import React from 'react';
 import Boton from '../atoms/Boton';
 import FormularioLogin from './FormularioLogin';
 
-// Organismo sin router: recibe por props lo que debe hacer al ingresar (onEnviar),
-// al pedir una cuenta nueva (onRegistro) y el mensaje de error general (error).
+
+
 function SeccionLogin(props) {
   return (
     <section className="container py-5 d-flex flex-column align-items-center">
@@ -14,7 +14,11 @@ function SeccionLogin(props) {
         </p>
       </div>
 
-      <FormularioLogin onEnviar={props.onEnviar} error={props.error} />
+      <FormularioLogin
+        onEnviar={props.onEnviar}
+        error={props.error}
+        cargando={props.cargando}
+      />
 
       <div className="mt-4 text-center">
         <p className="text-muted mb-2">¿Aún no tienes una cuenta?</p>

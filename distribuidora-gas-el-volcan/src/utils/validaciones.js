@@ -1,6 +1,6 @@
-// Reglas de validación: funciones puras.
-// Reciben un valor y devuelven un mensaje de error,
-// o '' (texto vacío) si el valor está bien.
+
+
+
 
 export function validarObligatorio(valor, mensaje = 'Este campo es obligatorio') {
   if (!valor || String(valor).trim() === '') {
@@ -59,7 +59,7 @@ export function validarClave(valor) {
   return '';
 }
 
-// Número: rechaza texto vacío, texto que no es número y valores bajo el mínimo.
+
 export function validarNumero(valor, minimo = 0) {
   const texto = String(valor ?? '').trim();
 
@@ -80,7 +80,7 @@ export function validarNumero(valor, minimo = 0) {
   return '';
 }
 
-// Confirmación de clave: no puede estar vacía y debe ser igual a la clave.
+
 export function validarConfirmacion(clave, confirmacion) {
   const obligatorio = validarObligatorio(confirmacion, 'Repite tu clave');
   if (obligatorio) return obligatorio;

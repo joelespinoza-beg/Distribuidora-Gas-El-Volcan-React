@@ -6,16 +6,16 @@ import {
   eliminarProducto
 } from '../services/productoService';
 
-// Un context es una caja compartida: cualquier componente la abre y todos ven lo mismo.
+
 const ProductosContext = createContext(null);
 
 export function ProductosProvider({ children }) {
-  // La lista vive en el estado de React; el service la guarda en localStorage.
-  // Pasar una función a useState hace que se lea del service solo la primera vez.
+
+
   const [productos, setProductos] = useState(() => listarProductos());
 
   function crear(datos) {
-    const nuevo = crearProducto(datos); // si el código está repetido, aquí se lanza el error
+    const nuevo = crearProducto(datos);
     setProductos(listarProductos());
     return nuevo;
   }
@@ -36,7 +36,7 @@ export function ProductosProvider({ children }) {
   return <ProductosContext.Provider value={valor}>{children}</ProductosContext.Provider>;
 }
 
-// Hook propio para abrir la caja desde cualquier componente
+
 export function useProductos() {
   const contexto = useContext(ProductosContext);
 

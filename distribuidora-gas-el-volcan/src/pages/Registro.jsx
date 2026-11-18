@@ -3,23 +3,29 @@ import { useNavigate } from 'react-router-dom';
 import PlantillaPublica from '../components/templates/PlantillaPublica';
 import FormularioRegistro from '../components/organisms/FormularioRegistro';
 import Boton from '../components/atoms/Boton';
-import { registrarUsuario } from '../services/usuarioService';
+import { useAutenticacion } from '../hooks/useAutenticacion';
 import { useTituloPagina } from '../hooks/useTituloPagina';
 
-// Página: crear cuenta. Decide qué pasa cuando el formulario está correcto.
+
 function Registro() {
   const navigate = useNavigate();
   const [error, setError] = useState('');
+  const [cargando, setCargando] = useState(false);
+  const { crearCuenta } = useAutenticacion();
 
   useTituloPagina('Crear cuenta');
 
-  function manejarEnvio(datos) {
+  async function manejarEnvio(datos) {
+    setCargando(true);
+    setError('');
+
     try {
-      registrarUsuario(datos);
+      await crearCuenta(datos);
       navigate('/login', { state: { mensaje: 'Cuenta creada. Ya puedes ingresar.' } });
     } catch (fallo) {
-      // Por ejemplo: ya existe una cuenta con ese correo
       setError(fallo.message);
+    } finally {
+      setCargando(false);
     }
   }
 
@@ -31,7 +37,7 @@ function Registro() {
           <p className="text-muted">Regístrate para hacer y seguir tus pedidos.</p>
         </div>
 
-        <FormularioRegistro onEnviar={manejarEnvio} error={error} />
+        <FormularioRegistro onEnviar={manejarEnvio} error={error} cargando={cargando} />
 
         <div className="mt-4 text-center">
           <p className="text-muted mb-2">¿Ya tienes una cuenta?</p>

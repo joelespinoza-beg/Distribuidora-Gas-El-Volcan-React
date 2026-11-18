@@ -37,5 +37,11 @@ describe('FormularioLogin', () => {
 
     expect(screen.getByRole('alert')).toHaveTextContent('Correo o clave incorrectos')
   })
+
+  it('desactiva el envío mientras la solicitud está en curso', () => {
+    render(<FormularioLogin cargando />)
+
+    expect(screen.getByRole('button', { name: 'Ingresando...' })).toBeDisabled()
+  })
 })
 
