@@ -1,58 +1,114 @@
-# Distribuidora-Gas-El-Volcan-React
+# Distribuidora Gas El Volcán - Frontend React
 
-Proyecto con fines académicos (DSY1104 · Desarrollo Full Stack II).
+Proyecto académico desarrollado para el caso semestral de **DSY1104 · Desarrollo Full Stack II**.
 
-## Nombres de los integrantes
+## Integrantes
 
 - Benjamin Gutierrez
 - Nicolas Ibañez
 - Joel Espinoza
 
-## Caso semestral
-
-- Distribuidora de Gas El Volcán
-
 ## Descripción
 
-El Volcán es una empresa familiar de Chillán que distribuye cilindros de gas de 5, 11 y 15 kg a clientes residenciales y comerciales. Con una flota de 2 camiones y un equipo de 5 personas, gestiona de 80 a 120 pedidos diarios en la zona. Su nueva página web optimiza la administración interna y resuelve la logística de entregas en tiempo real. Así, los clientes monitorean el estado de sus pedidos mientras la empresa agiliza sus operaciones cotidianas.
+Aplicación web para la Distribuidora de Gas El Volcán, ubicada en Chillán. Permite consultar productos, gestionar el carrito, crear pedidos, hacer seguimiento y administrar usuarios, productos, pedidos y entregas según el rol del usuario.
+
+## Tecnologías
+
+- React 19
+- Vite 8
+- React Router DOM 7
+- Bootstrap 5 y React Bootstrap
+- Axios
+- JavaScript ES Modules
+- Vitest
+- Testing Library y Jest DOM
+- Oxc/Oxlint
+
+## Requisitos
+
+- Node.js y npm
+- Backend disponible con API REST
+- Archivo `.env` configurado con la URL del backend
+
+## Instalación
+
+```bash
+npm install
+cp .env.example .env
+npm run dev
+```
+
+Por defecto, el cliente Axios utiliza:
+
+```text
+http://localhost:3000/api/v1
+```
+
+Si el backend está alojado en otro servidor, cambia `.env`:
+
+```env
+VITE_API_BASE_URL=http://TU-IP-O-DOMINIO:3000/api/v1
+```
+
+La configuración debe reiniciar el servidor de Vite después de modificarse.
+
+## Comandos disponibles
+
+```bash
+npm run dev       # Iniciar servidor de desarrollo
+npm run build     # Generar versión de producción
+npm run preview   # Probar la versión compilada
+npm run test      # Ejecutar pruebas en modo interactivo
+npm run test:run  # Ejecutar todas las pruebas una vez
+npm run test:cov  # Generar reporte de cobertura
+npm run lint      # Ejecutar el analizador Oxc/Oxlint
+```
 
 ## Estructura del proyecto
 
-```
+```text
 src/
+├── assets/
 ├── components/
 │   ├── atoms/
 │   │   ├── Boton.jsx
-│   │   ├── CampoTexto.jsx
 │   │   ├── ContadorCantidad.jsx
-│   │   ├── EtiquetaEstadoPedido.jsx
 │   │   ├── Precio.jsx
+│   │   ├── RutaProtegida.jsx
 │   │   └── Selector.jsx
 │   ├── molecules/
 │   │   ├── CampoFormulario.jsx
 │   │   ├── CampoSelector.jsx
 │   │   ├── FilaPedido.jsx
 │   │   ├── ItemPedido.jsx
-│   │   ├── SelectorTipoClient.jsx
-│   │   └── TarjetaProducto.jsx
+│   │   └── SelectorTipoClient.jsx
 │   ├── organisms/
 │   │   ├── CatalogoGas.jsx
 │   │   ├── Footer.jsx
-│   │   ├── FormularioLogin.jsx
-│   │   ├── FormularioNuevoPedido.jsx
-│   │   ├── FormularioProducto.jsx
-│   │   ├── FormularioRegistro.jsx
-│   │   ├── ListaEntregas.jsx
+│   │   ├── Formularios.jsx
 │   │   ├── ListaPedidosDelDia.jsx
 │   │   ├── Navbar.jsx
-│   │   ├── SeccionLogin.jsx
-│   │   ├── SeguimientoPedido.jsx
-│   │   └── TablaProductos.jsx
+│   │   ├── TablaProductos.jsx
+│   │   └── SeguimientoPedido.jsx
 │   └── templates/
 │       ├── PlantillaAdmin.jsx
 │       └── PlantillaPublica.jsx
+├── context/
+│   ├── AutenticacionContext.jsx
+│   ├── CarritoContext.jsx
+│   ├── PedidosContext.jsx
+│   └── ProductosContext.jsx
+├── data/
+│   ├── articulosBlog.js
+│   ├── cilindros.js
+│   ├── productos.js
+│   └── repartidores.js
+├── hooks/
+│   ├── useAutenticacion.js
+│   └── useTituloPagina.js
 ├── pages/
 │   ├── AdminProductos.jsx
+│   ├── AdminUsuarios.jsx
 │   ├── Blog.jsx
 │   ├── Carrito.jsx
 │   ├── Catalogo.jsx
@@ -70,18 +126,8 @@ src/
 │   ├── Registro.jsx
 │   ├── Repartidor.jsx
 │   └── SeguimientoPedido.jsx
-├── context/
-│   ├── CarritoContext.jsx
-│   ├── PedidosContext.jsx
-│   └── ProductosContext.jsx
-├── data/
-│   ├── articulosBlog.js
-│   ├── cilindros.js
-│   ├── productos.js
-│   └── repartidores.js
-├── hooks/
-│   └── useTituloPagina.js
 ├── services/
+│   ├── api.js
 │   ├── carritoService.js
 │   ├── pedidoService.js
 │   ├── productoService.js
@@ -89,62 +135,77 @@ src/
 ├── utils/
 │   ├── precios.js
 │   └── validaciones.js
-├── styles/
-│   └── componentes.css
 ├── App.jsx
+├── index.css
 ├── main.jsx
 └── setupTests.js
 ```
 
-Las pruebas unitarias (`*.test.js` y `*.test.jsx`) están junto al archivo que prueban.
+Las pruebas unitarias utilizan los nombres `*.test.js` y `*.test.jsx` y se encuentran junto a los archivos que prueban.
 
-## Rutas de la aplicación
+## Rutas públicas
 
-| Ruta | Página |
+| Ruta | Vista |
 |---|---|
-| `/` | Inicio |
-| `/catalogo` | Catálogo con filtros |
-| `/categorias` | Categorías de productos |
-| `/ofertas` | Ofertas y promociones |
-| `/nosotros` | Nosotros y contacto |
-| `/blog` y `/blog/:id` | Consejos y novedades |
-| `/carrito` | Solicitud en curso (carrito) |
-| `/checkout` | Confirmar solicitud y despacho |
-| `/producto/:id` | Detalle de un producto |
-| `/login` y `/registro` | Ingreso y creación de cuenta |
-| `/pedido/nuevo` | Solicitar un pedido |
-| `/pedido/resultado` y `/pedido/resultado/:id` | Pedido confirmado o no realizado |
-| `/seguimiento` y `/seguimiento/:id` | Seguimiento del pedido |
-| `/operadora` | Operadora: pedidos del día |
-| `/repartidor` | Repartidor: mis entregas |
-| `/admin/productos` | Administración de productos (CRUD) |
+| `/` | Página de inicio |
+| `/login` | Inicio de sesión |
+| `/registro` | Creación de cuenta |
+| `/carrito` | Carrito de compras |
+| `/checkout` | Confirmación del pedido |
+| `/pedido/resultado/:id` | Resultado del pedido |
+| `/seguimiento` | Buscar o seguir un pedido |
+| `/seguimiento/:id` | Detalle de seguimiento |
+| `*` | Página no encontrada |
 
-## Tecnologías usadas
+## Rutas protegidas por rol
 
-- React + Vite
-- React Router
-- Bootstrap
-- Vitest y Testing Library (pruebas unitarias y cobertura)
+| Ruta | Roles permitidos | Vista |
+|---|---|---|
+| `/operadora` | `operadora`, `admin` | Gestión de pedidos |
+| `/repartidor` | `repartidor`, `admin` | Entregas asignadas |
+| `/admin/productos` | `admin` | CRUD de productos |
+| `/admin/usuarios` | `admin` | Gestión de usuarios |
 
-## Comandos para usar el proyecto
+Las rutas protegidas usan `RutaProtegida`. Si no existe una sesión válida, redirigen al inicio de sesión. Si el rol no está autorizado, muestran acceso denegado.
+
+## Conexión con el backend
+
+La instancia central de Axios está definida en `src/services/api.js`.
+
+Características:
+
+- URL configurable mediante `VITE_API_BASE_URL`.
+- Timeout configurado de 10 segundos.
+- Agregado automático del JWT Bearer desde `localStorage`.
+- Normalización de errores devueltos por la API.
+
+Los servicios del frontend consumen estos grupos de endpoints:
+
+| Servicio | Endpoints principales |
+|---|---|
+| Autenticación | `/auth/register`, `/auth/login`, `/auth/me` |
+| Usuarios | `/usuarios` |
+| Productos | `/productos` |
+| Pedidos | `/pedidos` |
+
+El backend debe habilitar CORS para el origen de Vite, normalmente `http://localhost:5173`, y el puerto configurado por el servidor backend.
+
+## Autenticación
+
+- El token de acceso se guarda en `localStorage` con la clave `gas-el-volcan-access-token`.
+- Axios agrega el token como `Authorization: Bearer <token>` a las solicitudes protegidas.
+- `AutenticacionContext` restaura la sesión consultando el perfil al recargar la página.
+- `RutaProtegida` controla el acceso según usuario autenticado y rol.
+
+## Pruebas
+
+Las pruebas cubren componentes, contextos, páginas, servicios y utilidades:
 
 ```bash
-npm install
-npm run dev
-```
-
-Configura `VITE_API_BASE_URL` en un archivo `.env.local` antes de iniciar Vite.
-Puedes partir de `.env.example`. Esta variable se incorpora al bundle del frontend
-y solo debe contener la URL pública de la API; nunca credenciales ni secretos.
-
-Para ejecutar las pruebas y cobertura:
-
-```bash
-npm test
 npm run test:run
 npm run test:cov
 ```
 
 ## Material complementario
 
-- [ERS versión 1 (Drive)](https://drive.google.com/drive/folders/1gQgQNAdRC82WPKbCPvOgrOTeHvAdklCW?usp=drive_link)
+- [ERS versión 1 (Google Drive)](https://drive.google.com/drive/folders/1gQgQNAdRC82WPKbCPvOgrOTeHvAdklCW?usp=drive_link)
