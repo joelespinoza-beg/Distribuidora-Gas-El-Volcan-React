@@ -14,12 +14,12 @@ import Registro from './pages/Registro';
 import Carrito from './pages/Carrito';
 import Checkout from './pages/Checkout';
 import PedidoConfirmadoONoRealizado from './pages/PedidoConfirmadoONoRealizado';
-import Seguimiento from './pages/Seguimiento';
+import SeguimientoPedido from './pages/SeguimientoPedido';
 import Operadora from './pages/Operadora';
 import Repartidor from './pages/Repartidor';
 import AdminProductos from './pages/AdminProductos';
 import AdminUsuarios from './pages/AdminUsuarios';
-import NotFound from './pages/NotFound';
+import NoEncontrada from './pages/NoEncontrada';
 
 function App(props) {
   return (
@@ -36,8 +36,8 @@ function App(props) {
                 <Route path="/carrito" element={<Carrito />} />
                 <Route path="/checkout" element={<Checkout />} />
                 <Route path="/pedido/resultado/:id" element={<PedidoConfirmadoONoRealizado />} />
-                <Route path="/seguimiento" element={<Seguimiento />} />
-                <Route path="/seguimiento/:id" element={<Seguimiento />} />
+                <Route path="/seguimiento" element={<SeguimientoPedido />} />
+                <Route path="/seguimiento/:id" element={<SeguimientoPedido />} />
 
                 {/* Rutas Protegidas por Rol */}
                 <Route 
@@ -77,7 +77,7 @@ function App(props) {
                 />
 
                 {/* Ruta 404 */}
-                <Route path="*" element={<NotFound />} />
+                <Route path="*" element={<NoEncontrada />} />
               </Routes>
             </CarritoProvider>
           </PedidosProvider>

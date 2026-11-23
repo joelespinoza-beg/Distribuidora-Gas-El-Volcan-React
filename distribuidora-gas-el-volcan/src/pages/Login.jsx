@@ -8,22 +8,24 @@ import { useTituloPagina } from '../hooks/useTituloPagina';
 function Login(props) {
   const navigate = useNavigate();
   const ubicacion = useLocation();
-  const { iniciarSesion } = useAutenticacion();
+  const { iniciarSesion, errorSesion } = useAutenticacion();
   const [error, setError] = useState('');
   const [cargando, setCargando] = useState(false);
-  const { iniciarSesion, errorSesion } = useAutenticacion();
 
   useTituloPagina('Ingresar');
 
   const mensaje = ubicacion.state?.mensaje;
 
   async function manejarEnvio(datos) {
+    setCargando(true);
+    setError('');
     try {
       await iniciarSesion(datos);
-      setError('');
-      navigate('/'); 
+      navigate('/');
     } catch (fallo) {
       setError(fallo.message || 'Correo o clave incorrectos');
+    } finally {
+      setCargando(false);
     }
   }
 

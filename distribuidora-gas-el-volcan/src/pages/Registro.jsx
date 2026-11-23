@@ -11,16 +11,19 @@ function Registro(props) {
   const { crearCuenta } = useAutenticacion();
   const [error, setError] = useState('');
   const [cargando, setCargando] = useState(false);
-  const { crearCuenta } = useAutenticacion();
 
   useTituloPagina('Crear cuenta');
 
   async function manejarEnvio(datos) {
+    setCargando(true);
+    setError('');
     try {
       await crearCuenta(datos);
       navigate('/login', { state: { mensaje: 'Cuenta creada. Ya puedes ingresar.' } });
     } catch (fallo) {
       setError(fallo.message || 'No se pudo crear la cuenta');
+    } finally {
+      setCargando(false);
     }
   }
 
