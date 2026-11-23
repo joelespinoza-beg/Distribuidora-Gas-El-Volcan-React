@@ -1,68 +1,42 @@
-// pedidoService: guarda los pedidos de gas y cambia su estado.
-// Un pedido: { id, cliente, telefono, direccion, zona, tipoCliente, producto, cantidad,
-//              precioUnitario, total, metodoPago, estado, repartidorId, hora }
+// src/services/pedidoService.js
+import { api } from './api';
 
-// Estados por los que avanza un pedido (los mismos que usan las listas y el seguimiento)
 export const ESTADOS_PEDIDO = ['pendiente', 'asignado', 'en_camino', 'entregado'];
 
-const CLAVE = 'pedidos';
-
-function leer() {
-  const guardado = localStorage.getItem(CLAVE);
-  return guardado === null ? [] : JSON.parse(guardado);
+export async function listarPedidos() {
+  const { data } = await api.get('/pedidos');
+  return data;
 }
 
-function guardar(lista) {
-  localStorage.setItem(CLAVE, JSON.stringify(lista));
+export async function obtenerPedido(id) {
+  const { data } = await api.get(`/pedidos/${id}`);
+  return data;
 }
 
-// READ: todos los pedidos
-export function listarPedidos() {
-  return leer();
-}
-
-// READ: un pedido por su número (o null)
-export function obtenerPedido(id) {
-  return leer().find((p) => p.id === id) ?? null;
-}
-
-// CREATE: registra un pedido nuevo. Siempre parte "pendiente" y sin repartidor.
-export function crearPedido(datos) {
-  const lista = leer();
-  const nuevoId = Math.max(0, ...lista.map((p) => p.id)) + 1;
-  const productos = datos.productos ?? [{
-    id: datos.producto?.id,
-    nombre: datos.producto?.nombre ?? datos.producto,
-    cantidad: datos.cantidad,
-    precioUnitario: datos.precioUnitario
-  }];
-  const nuevo = {
-    ...datos,
-    productos,
-    id: nuevoId,
-    estado: 'pendiente',
-    repartidorId: null,
-    hora: new Date().toLocaleTimeString('es-CL', { hour: '2-digit', minute: '2-digit' })
+export async function crearPedido(datos) {
+  // DTO limpio: el backend calcula totales y descuenta stock
+  const payload = {
+    cliente: datos.cliente.trim(),
+    telefono: datos.telefono.trim(),
+    direccion: datos.direccion.trim(),
+    zona: datos.zona,
+    tipoCliente: datos.tipoCliente || 'residencial',
+    metodoPago: datos.metodoPago || 'efectivo al recibir',
+    productos: datos.productos.map((item) => ({
+      id: item.id,
+      cantidad: Number(item.cantidad)
+    }))
   };
-
-  guardar([...lista, nuevo]);
-  return nuevo;
+  const { data } = await api.post('/pedidos', payload);
+  return data;
 }
 
-// UPDATE: cambia los campos indicados
-export function actualizarPedido(id, cambios) {
-  const lista = leer().map((p) => (p.id === id ? { ...p, ...cambios } : p));
-
-  guardar(lista);
-  return lista.find((p) => p.id === id) ?? null;
+export async function asignarRepartidor(id, repartidorId) {
+  const { data } = await api.patch(`/pedidos/${id}/asignar`, { repartidorId });
+  return data;
 }
 
-// La operadora asigna un repartidor: el pedido pasa a "asignado"
-export function asignarRepartidor(id, repartidorId) {
-  return actualizarPedido(id, { repartidorId, estado: 'asignado' });
-}
-
-// El repartidor marca "en_camino" o "entregado"
-export function cambiarEstado(id, estado) {
-  return actualizarPedido(id, { estado });
+export async function cambiarEstado(id, estado) {
+  const { data } = await api.patch(`/pedidos/${id}/estado`, { estado });
+  return data;
 }

@@ -1,58 +1,74 @@
-import React, { useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
 import PlantillaPublica from '../components/templates/PlantillaPublica';
-import SeguimientoPedido from '../components/organisms/SeguimientoPedido';
-import CampoFormulario from '../components/molecules/CampoFormulario';
-import Boton from '../components/atoms/Boton';
 import { usePedidos } from '../context/PedidosContext';
+import Boton from '../components/atoms/Boton';
+import CampoFormulario from '../components/molecules/CampoFormulario';
 import { useTituloPagina } from '../hooks/useTituloPagina';
 
-// Página: seguimiento. Rutas: /seguimiento (buscar) y /seguimiento/:id (ver un pedido)
-function Seguimiento() {
+function Seguimiento(props) {
+  const { id } = useParams();
   const navigate = useNavigate();
-  const params = useParams();
-  const { obtener } = usePedidos();
-  const [numero, setNumero] = useState('');
+  const { buscarPorId } = usePedidos();
 
-  useTituloPagina('Seguimiento del pedido');
+  const [idBuscado, setIdBuscado] = useState(id || '');
+  const [pedido, setPedido] = useState(null);
+  const [cargando, setCargando] = useState(Boolean(id));
+  const [error, setError] = useState('');
 
-  const pedido = params.id ? obtener(Number(params.id)) : null;
+  useTituloPagina('Seguimiento de pedido');
 
-  function buscar(evento) {
-    evento.preventDefault();
-    if (numero.trim() !== '') {
-      navigate(`/seguimiento/${numero.trim()}`);
-    }
+  useEffect(() => {
+    if (!id) return;
+    
+    setCargando(true);
+    buscarPorId(id)
+      .then((datos) => {
+        setPedido(datos);
+        setError('');
+      })
+      .catch(() => {
+        setPedido(null);
+        setError('No se encontró un pedido con ese ID.');
+      })
+      .finally(() => setCargando(false));
+  }, [id, buscarPorId]);
+
+  function buscar(e) {
+    e.preventDefault();
+    if (!idBuscado.trim()) return;
+    navigate(`/seguimiento/${idBuscado.trim()}`);
   }
 
   return (
     <PlantillaPublica>
-      <div className="container py-4">
-        <h2 className="mb-3">Seguimiento de tu pedido</h2>
-
-        <form onSubmit={buscar} className="row g-2 align-items-end mb-4">
-          <div className="col-12 col-md-4">
+      <div className="container py-5">
+        <div className="card p-4 mx-auto mb-4" style={{ maxWidth: '500px' }}>
+          <h1 className="h4 mb-3 text-center">Rastrea tu pedido</h1>
+          <form onSubmit={buscar} className="d-flex gap-2">
             <CampoFormulario
-              id="numero-pedido"
-              name="numero"
-              label="Número de pedido"
-              placeholder="Ej: 1"
-              value={numero}
-              onChange={(evento) => setNumero(evento.target.value)}
+              id="idPedido"
+              name="idPedido"
+              placeholder="Ingresa el ID (Ej: PED-123)"
+              value={idBuscado}
+              onChange={(e) => setIdBuscado(e.target.value)}
             />
-          </div>
-          <div className="col-12 col-md-4 mb-3">
-            <Boton texto="Buscar pedido" type="submit" />
-          </div>
-        </form>
+            <Boton type="submit" texto="Buscar" />
+          </form>
+        </div>
 
-        {params.id && !pedido && (
-          <p role="alert" className="text-danger">
-            No encontramos un pedido con el número {params.id}.
-          </p>
+        {cargando && <p className="text-center">Buscando pedido...</p>}
+        {error && !cargando && <div className="alert alert-danger text-center mx-auto" style={{ maxWidth: '500px' }}>{error}</div>}
+
+        {pedido && !cargando && (
+          <div className="card p-4 mx-auto" style={{ maxWidth: '500px' }}>
+            <h2 className="h5 border-bottom pb-2 mb-3">Detalle del Pedido #{pedido.id}</h2>
+            <p><strong>Estado:</strong> <span className="badge bg-primary text-uppercase">{pedido.estado}</span></p>
+            <p><strong>Cliente:</strong> {pedido.cliente}</p>
+            <p><strong>Dirección:</strong> {pedido.direccion}, {pedido.zona}</p>
+            <p><strong>Total:</strong> ${pedido.total}</p>
+          </div>
         )}
-
-        {pedido && <SeguimientoPedido pedido={pedido} />}
       </div>
     </PlantillaPublica>
   );

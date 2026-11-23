@@ -7,7 +7,7 @@ import { useProductos } from '../context/ProductosContext';
 import { useTituloPagina } from '../hooks/useTituloPagina';
 
 // Página del administrador: CRUD de productos (listar, crear, editar y eliminar).
-function AdminProductos() {
+function AdminProductos(props) {
   const { productos, crear, actualizar, eliminar } = useProductos();
 
   const [formularioAbierto, setFormularioAbierto] = useState(false);
@@ -37,27 +37,32 @@ function AdminProductos() {
     setEnEdicion(null);
   }
 
-  function guardar(datos) {
+  async function guardar(datos) {
     try {
       if (enEdicion) {
-        actualizar(enEdicion.id, datos);
+        await actualizar(enEdicion.id, datos);
         setMensaje(`Producto ${datos.id} actualizado.`);
       } else {
-        crear(datos);
+        await crear(datos);
         setMensaje(`Producto ${datos.id} creado.`);
       }
       setError('');
       cerrarFormulario();
     } catch (fallo) {
-      // Por ejemplo: ya existe un producto con ese código
       setError(fallo.message);
     }
   }
 
-  function confirmarEliminar() {
-    eliminar(aEliminar.id);
-    setMensaje(`Producto ${aEliminar.nombre} eliminado.`);
-    setAEliminar(null);
+  async function confirmarEliminar() {
+    try {
+      await eliminar(aEliminar.id);
+      setMensaje(`Producto ${aEliminar.nombre} eliminado.`);
+      setError('');
+    } catch (fallo) {
+      setError(fallo.message);
+    } finally {
+      setAEliminar(null);
+    }
   }
 
   return (

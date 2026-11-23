@@ -1,38 +1,36 @@
-import React from 'react';
-import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { useParams, Link } from 'react-router-dom';
 import PlantillaPublica from '../components/templates/PlantillaPublica';
-import Boton from '../components/atoms/Boton';
-import Precio from '../components/atoms/Precio';
 import { usePedidos } from '../context/PedidosContext';
+import Boton from '../components/atoms/Boton';
 import { useTituloPagina } from '../hooks/useTituloPagina';
 
-// Página: resultado del pedido.
-//   /pedido/resultado/:id  -> pedido confirmado (se busca por su número)
-//   /pedido/resultado      -> pedido no realizado (el motivo llega en location.state)
-function PedidoConfirmadoONoRealizado() {
-  const navigate = useNavigate();
-  const params = useParams();
-  const ubicacion = useLocation();
-  const { obtener } = usePedidos();
+function PedidoConfirmadoONoRealizado(props) {
+  const { id } = useParams();
+  const { buscarPorId } = usePedidos();
+  
+  const [pedido, setPedido] = useState(null);
+  const [cargando, setCargando] = useState(true);
 
-  const pedido = params.id ? obtener(Number(params.id)) : null;
+  useTituloPagina('Resultado del pedido');
 
-  useTituloPagina(pedido ? 'Pedido confirmado' : 'Pedido no realizado');
+  useEffect(() => {
+    if (!id) {
+      setCargando(false);
+      return;
+    }
+    
+    buscarPorId(id)
+      .then(setPedido)
+      .catch(() => setPedido(null))
+      .finally(() => setCargando(false));
+  }, [id, buscarPorId]);
 
-  if (!pedido) {
-    const motivo = ubicacion.state?.motivo ?? 'No encontramos el pedido que buscas.';
-
+  if (cargando) {
     return (
       <PlantillaPublica>
-        <div className="container py-5">
-          <div className="alert alert-danger" role="alert">
-            <h2 className="h4 alert-heading">No pudimos registrar tu pedido</h2>
-            <p className="mb-0">{motivo}</p>
-          </div>
-          <div className="d-flex flex-wrap gap-2">
-            <Boton texto="Intentar de nuevo" onClick={() => navigate('/pedido/nuevo')} />
-            <Boton texto="Volver al inicio" variante="outline-secondary" onClick={() => navigate('/')} />
-          </div>
+        <div className="container py-5 text-center">
+          <p>Cargando información del pedido...</p>
         </div>
       </PlantillaPublica>
     );
@@ -40,30 +38,31 @@ function PedidoConfirmadoONoRealizado() {
 
   return (
     <PlantillaPublica>
-      <div className="container py-5">
-        <div className="alert alert-success" role="status">
-          <h2 className="h4 alert-heading">¡Pedido confirmado!</h2>
-          <p className="mb-0">Tu pedido #{pedido.id} fue registrado correctamente.</p>
-        </div>
-
-        <ul className="list-unstyled mb-4">
-          <li>Cliente: <strong>{pedido.cliente}</strong></li>
-          <li>Dirección: {pedido.direccion} ({pedido.zona})</li>
-          <li>
-            Productos:{' '}
-            {(pedido.productos || [{
-              nombre: pedido.producto?.nombre ?? pedido.producto,
-              cantidad: pedido.cantidad
-            }]).map((producto) => `${producto.cantidad} × ${producto.nombre}`).join(', ')}
-          </li>
-          <li>Total: <Precio valor={pedido.total} /></li>
-          <li>Pago: {pedido.metodoPago}</li>
-        </ul>
-
-        <div className="d-flex flex-wrap gap-2">
-          <Boton texto="Ver seguimiento" onClick={() => navigate(`/seguimiento/${pedido.id}`)} />
-          <Boton texto="Volver al inicio" variante="outline-secondary" onClick={() => navigate('/')} />
-        </div>
+      <div className="container py-5 text-center">
+        {pedido ? (
+          <div className="card p-4 mx-auto" style={{ maxWidth: '500px' }}>
+            <h1 className="h3 text-success mb-3">¡Pedido Confirmado!</h1>
+            <p className="mb-4">
+              Tu pedido <strong>#{pedido.id}</strong> ha sido ingresado correctamente.
+            </p>
+            <div className="d-flex justify-content-center gap-3">
+              <Link to={`/seguimiento/${pedido.id}`}>
+                <Boton texto="Seguir mi pedido" variante="primary" />
+              </Link>
+              <Link to="/">
+                <Boton texto="Volver al inicio" variante="outline-secondary" />
+              </Link>
+            </div>
+          </div>
+        ) : (
+          <div className="card p-4 mx-auto" style={{ maxWidth: '500px' }}>
+            <h1 className="h3 text-danger mb-3">Pedido no encontrado</h1>
+            <p className="mb-4">No logramos encontrar el pedido que buscas. Verifica el ID ingresado.</p>
+            <Link to="/">
+              <Boton texto="Volver al inicio" variante="primary" />
+            </Link>
+          </div>
+        )}
       </div>
     </PlantillaPublica>
   );

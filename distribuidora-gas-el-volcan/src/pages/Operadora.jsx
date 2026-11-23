@@ -5,8 +5,7 @@ import { usePedidos } from '../context/PedidosContext';
 import { repartidores } from '../data/repartidores';
 import { useTituloPagina } from '../hooks/useTituloPagina';
 
-// Página de la operadora: ve los pedidos, asigna repartidor y cambia estados.
-function Operadora() {
+function Operadora(props) {
   const { pedidos, asignar, cambiarEstado } = usePedidos();
   const [asignaciones, setAsignaciones] = useState({});
 
@@ -16,6 +15,22 @@ function Operadora() {
     setAsignaciones((actual) => ({ ...actual, [pedidoId]: repartidorId }));
   }
 
+  async function manejarAsignacion({ pedidoId, repartidorId }) {
+    try {
+      await asignar(pedidoId, repartidorId);
+    } catch (error) {
+      console.error('Error al asignar:', error.message);
+    }
+  }
+
+  async function manejarCambioEstado({ pedidoId, estado }) {
+    try {
+      await cambiarEstado(pedidoId, estado);
+    } catch (error) {
+      console.error('Error al cambiar estado:', error.message);
+    }
+  }
+
   return (
     <PlantillaAdmin>
       <ListaPedidosDelDia
@@ -23,8 +38,8 @@ function Operadora() {
         repartidores={repartidores}
         asignaciones={asignaciones}
         onSeleccionarRepartidor={seleccionarRepartidor}
-        onAsignar={({ pedidoId, repartidorId }) => asignar(pedidoId, repartidorId)}
-        onCambiarEstado={({ pedidoId, estado }) => cambiarEstado(pedidoId, estado)}
+        onAsignar={manejarAsignacion}
+        onCambiarEstado={manejarCambioEstado}
       />
     </PlantillaAdmin>
   );

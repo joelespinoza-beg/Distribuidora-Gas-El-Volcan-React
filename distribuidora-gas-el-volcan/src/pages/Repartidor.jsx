@@ -6,8 +6,7 @@ import { usePedidos } from '../context/PedidosContext';
 import { repartidores } from '../data/repartidores';
 import { useTituloPagina } from '../hooks/useTituloPagina';
 
-// Página del repartidor: elige quién es (simulado) y ve sus entregas asignadas.
-function Repartidor() {
+function Repartidor(props) {
   const { pedidos, cambiarEstado } = usePedidos();
   const [repartidorId, setRepartidorId] = useState(repartidores[0].id);
 
@@ -17,6 +16,14 @@ function Repartidor() {
     valor: repartidor.id,
     texto: repartidor.nombre
   }));
+
+  async function manejarCambioEstado({ pedidoId, estado }) {
+    try {
+      await cambiarEstado(pedidoId, estado);
+    } catch (error) {
+      console.error('Error al actualizar entrega:', error.message);
+    }
+  }
 
   return (
     <PlantillaAdmin>
@@ -36,7 +43,7 @@ function Repartidor() {
       <ListaEntregas
         pedidos={pedidos}
         repartidorId={repartidorId}
-        onCambiarEstado={({ pedidoId, estado }) => cambiarEstado(pedidoId, estado)}
+        onCambiarEstado={manejarCambioEstado}
       />
     </PlantillaAdmin>
   );

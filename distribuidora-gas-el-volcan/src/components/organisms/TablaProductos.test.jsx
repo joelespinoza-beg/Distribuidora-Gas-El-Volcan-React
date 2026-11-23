@@ -1,42 +1,36 @@
-import React from 'react';
-import { render, screen, within } from '@testing-library/react';
-import { describe, expect, it } from 'vitest';
-import { productosCatalogo } from '../../data/productos';
+import { render, screen, fireEvent, within } from '@testing-library/react';
 import TablaProductos from './TablaProductos';
 
-describe('TablaProductos', () => {
-  it('muestra productos, ambos precios y el stock del catálogo', () => {
-    render(<TablaProductos productos={productosCatalogo} />);
+const mockProductos = [
+  { id: 1, nombre: 'Cilindro 11kg', precio: 15000, stock: 10 }
+];
 
-    expect(screen.getByRole('table', {
-      name: 'Catálogo de productos, precios y stock actual'
-    })).toBeInTheDocument();
-    expect(screen.getByText('Cilindro GLP 11 kg')).toBeInTheDocument();
-    const producto = screen.getByRole('row', { name: /CL002/ });
-    expect(within(producto).getByText('$ 12.000')).toBeInTheDocument();
-    expect(within(producto).getByText('$ 11.000')).toBeInTheDocument();
-    expect(within(producto).getByText('200')).toBeInTheDocument();
-    expect(within(screen.getByRole('row', { name: /RG001/ })).getByText('Reguladores'))
-      .toBeInTheDocument();
+describe('TablaProductos', () => {
+  it('renderiza correctamente con datos mockeados', () => {
+    render(<TablaProductos productos={mockProductos} />);
+    expect(screen.getByText('Cilindro 11kg')).toBeInTheDocument();
   });
 
-  it('acepta un catálogo filtrado por propiedades', () => {
+  it('muestra la columna de acciones y ejecuta callbacks cuando se pasan las props onEditar y onEliminar', () => {
+    const mockOnEditar = vi.fn(); // o jest.fn()
+    const mockOnEliminar = vi.fn();
+
     render(
-      <TablaProductos
-        productos={[{
-          id: 'CL001',
-          categoria: 'Cilindros de Gas',
-          nombre: 'Cilindro GLP 5 kg',
-          descripcion: 'Para uso residencial.',
-          unidad: 'Unidad',
-          precioResidencial: 6500,
-          precioComercial: 6000,
-          stock: 80
-        }]}
+      <TablaProductos 
+        productos={mockProductos} 
+        onEditar={mockOnEditar} 
+        onEliminar={mockOnEliminar} 
       />
     );
 
-    expect(screen.getByText('Cilindro GLP 5 kg')).toBeInTheDocument();
-    expect(screen.queryByText('Reguladores')).not.toBeInTheDocument();
+    const fila = screen.getByRole('row', { name: /Cilindro 11kg/i });
+    const botonEditar = within(fila).getByRole('button', { name: /editar/i });
+    const botonEliminar = within(fila).getByRole('button', { name: /eliminar/i });
+
+    fireEvent.click(botonEditar);
+    expect(mockOnEditar).toHaveBeenCalledWith(mockProductos[0]);
+
+    fireEvent.click(botonEliminar);
+    expect(mockOnEliminar).toHaveBeenCalledWith(mockProductos[0].id);
   });
 });

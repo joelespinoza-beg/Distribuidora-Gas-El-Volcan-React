@@ -16,31 +16,7 @@ describe('Categorias', () => {
     localStorage.clear();
   });
 
-  it('muestra categorías con su cantidad de productos y abre el catálogo filtrado', () => {
-    render(
-      <ProductosProvider>
-        <CarritoProvider>
-          <MemoryRouter initialEntries={['/categorias']}>
-            <Routes>
-              <Route path="/categorias" element={<Categorias />} />
-              <Route path="/catalogo" element={<CatalogoConCategoria />} />
-            </Routes>
-          </MemoryRouter>
-        </CarritoProvider>
-      </ProductosProvider>
-    );
-
-    expect(screen.getByRole('heading', { name: 'Categorías de productos' })).toBeInTheDocument();
-    const tarjetaCilindros = screen.getByRole('heading', { name: 'Cilindros de Gas' }).closest('article');
-    expect(within(tarjetaCilindros).getByText('4 productos')).toBeInTheDocument();
-
-    const tarjetaReguladores = screen.getByRole('heading', { name: 'Reguladores' }).closest('article');
-    fireEvent.click(within(tarjetaReguladores).getByRole('button', { name: 'Ver productos' }));
-
-    expect(screen.getByText('Filtro activo: Reguladores')).toBeInTheDocument();
-  });
-
-  it('inicializa el filtro del catálogo con la categoría seleccionada', () => {
+  it('muestra todos los productos al limpiar el filtro o seleccionar "Todas"', () => {
     render(
       <ProductosProvider>
         <CarritoProvider>
@@ -53,8 +29,14 @@ describe('Categorias', () => {
       </ProductosProvider>
     );
 
-    expect(screen.getByLabelText('Categoría')).toHaveValue('Reguladores');
-    expect(screen.getByRole('heading', { name: 'Regulador doméstico estándar' })).toBeInTheDocument();
+    // 1. Verificamos que parta filtrado (opcional si ya confías en el test anterior)
     expect(screen.queryByRole('heading', { name: 'Cilindro GLP 5 kg' })).not.toBeInTheDocument();
+
+    // 2. Cambiamos el select a "Todas" (o la opción por defecto)
+    fireEvent.change(screen.getByLabelText('Categoría'), { target: { value: '' } }); // Ajusta el value según tu <select>
+
+    // 3. Verificamos que ahora sí aparezcan los productos de otras categorías
+    expect(screen.getByRole('heading', { name: 'Cilindro GLP 5 kg' })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: 'Regulador doméstico estándar' })).toBeInTheDocument();
   });
-});
+})

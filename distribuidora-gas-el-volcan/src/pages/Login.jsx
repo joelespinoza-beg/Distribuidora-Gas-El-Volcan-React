@@ -2,30 +2,27 @@ import React, { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import PlantillaPublica from '../components/templates/PlantillaPublica';
 import SeccionLogin from '../components/organisms/SeccionLogin';
-import { autenticar } from '../services/usuarioService';
+import { useAutenticacion } from '../hooks/useAutenticacion';
 import { useTituloPagina } from '../hooks/useTituloPagina';
 
-// Página: decide qué pasa cuando el formulario avisa que los datos tienen buen formato.
-function Login() {
+function Login(props) {
   const navigate = useNavigate();
   const ubicacion = useLocation();
+  const { iniciarSesion } = useAutenticacion();
   const [error, setError] = useState('');
 
   useTituloPagina('Ingresar');
 
-  // Mensaje que puede traer la página de registro (por ejemplo "Cuenta creada")
   const mensaje = ubicacion.state?.mensaje;
 
-  function manejarEnvio(datos) {
-    const usuario = autenticar(datos.email, datos.clave);
-
-    if (usuario === null) {
-      setError('Correo o clave incorrectos');
-      return;
+  async function manejarEnvio(datos) {
+    try {
+      await iniciarSesion(datos);
+      setError('');
+      navigate('/'); 
+    } catch (fallo) {
+      setError(fallo.message || 'Correo o clave incorrectos');
     }
-
-    setError('');
-    navigate('/catalogo');
   }
 
   return (

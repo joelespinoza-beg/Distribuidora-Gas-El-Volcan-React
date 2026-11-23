@@ -3,23 +3,22 @@ import { useNavigate } from 'react-router-dom';
 import PlantillaPublica from '../components/templates/PlantillaPublica';
 import FormularioRegistro from '../components/organisms/FormularioRegistro';
 import Boton from '../components/atoms/Boton';
-import { registrarUsuario } from '../services/usuarioService';
+import { useAutenticacion } from '../hooks/useAutenticacion';
 import { useTituloPagina } from '../hooks/useTituloPagina';
 
-// Página: crear cuenta. Decide qué pasa cuando el formulario está correcto.
-function Registro() {
+function Registro(props) {
   const navigate = useNavigate();
+  const { crearCuenta } = useAutenticacion();
   const [error, setError] = useState('');
 
   useTituloPagina('Crear cuenta');
 
-  function manejarEnvio(datos) {
+  async function manejarEnvio(datos) {
     try {
-      registrarUsuario(datos);
+      await crearCuenta(datos);
       navigate('/login', { state: { mensaje: 'Cuenta creada. Ya puedes ingresar.' } });
     } catch (fallo) {
-      // Por ejemplo: ya existe una cuenta con ese correo
-      setError(fallo.message);
+      setError(fallo.message || 'No se pudo crear la cuenta');
     }
   }
 

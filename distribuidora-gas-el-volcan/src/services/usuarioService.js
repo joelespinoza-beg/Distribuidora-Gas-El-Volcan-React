@@ -1,46 +1,61 @@
-// usuarioService: registro e ingreso de usuarios (datos simulados en localStorage).
-// OJO: solo para el Parcial 2. En el Parcial 3 el backend guardará la clave cifrada;
-// aquí se guarda tal cual porque no hay servidor.
+// src/services/usuarioService.js
+import { api, CLAVE_ACCESS_TOKEN } from './api';
 
-const CLAVE = 'usuarios';
-
-function leer() {
-  const guardado = localStorage.getItem(CLAVE);
-  return guardado === null ? [] : JSON.parse(guardado);
-}
-
-function guardar(lista) {
-  localStorage.setItem(CLAVE, JSON.stringify(lista));
-}
-
-// READ: todos los usuarios
-export function listarUsuarios() {
-  return leer();
-}
-
-// CREATE: registra un usuario. El correo no puede repetirse (sin distinguir mayúsculas).
-export function registrarUsuario({ nombre, email, clave }) {
-  const lista = leer();
-  const correo = email.trim().toLowerCase();
-
-  if (lista.some((usuario) => usuario.email === correo)) {
-    throw new Error('Ya existe una cuenta con ese correo');
-  }
-
-  const nuevo = {
-    id: Math.max(0, ...lista.map((usuario) => usuario.id)) + 1,
+export async function registrarUsuario({ nombre, email, clave }) {
+  const { data } = await api.post('/auth/register', {
     nombre: nombre.trim(),
-    email: correo,
+    email: email.trim().toLowerCase(),
     clave
-  };
-
-  guardar([...lista, nuevo]);
-  return nuevo;
+  });
+  return data;
 }
 
-// Devuelve el usuario si el correo y la clave coinciden; si no, null.
-export function autenticar(email, clave) {
-  const correo = email.trim().toLowerCase();
+export async function autenticar({ email, clave }) {
+  const { data } = await api.post('/auth/login', {
+    email: email.trim().toLowerCase(),
+    clave
+  });
+  return data;
+}
 
-  return leer().find((usuario) => usuario.email === correo && usuario.clave === clave) ?? null;
+export async function obtenerPerfil() {
+  const { data } = await api.get('/auth/me');
+  return data;
+}
+
+// Endpoints para el CRUD de Usuarios exigido en la rúbrica EP3
+export async function listarUsuarios() {
+  const { data } = await api.get('/usuarios');
+  return data;
+}
+
+export async function crearUsuarioAdmin(datos) {
+  const { data } = await api.post('/usuarios', {
+    nombre: datos.nombre.trim(),
+    email: datos.email.trim().toLowerCase(),
+    clave: datos.clave,
+    rol: datos.rol
+  });
+  return data;
+}
+
+export async function actualizarUsuario(id, cambios) {
+  const { data } = await api.put(`/usuarios/${id}`, cambios);
+  return data;
+}
+
+export async function eliminarUsuario(id) {
+  await api.delete(`/usuarios/${id}`);
+}
+
+export function leerAccessToken() {
+  return localStorage.getItem(CLAVE_ACCESS_TOKEN);
+}
+
+export function guardarAccessToken(token) {
+  localStorage.setItem(CLAVE_ACCESS_TOKEN, token);
+}
+
+export function eliminarAccessToken() {
+  localStorage.removeItem(CLAVE_ACCESS_TOKEN);
 }

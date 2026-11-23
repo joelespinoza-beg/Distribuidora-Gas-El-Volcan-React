@@ -16,6 +16,22 @@ describe('FormularioRegistro', () => {
     expect(onEnviar).not.toHaveBeenCalled()
   })
 
+  it('muestra un error si las contraseñas no coinciden', () => {
+    render(<FormularioRegistro />);
+    
+    fireEvent.change(screen.getByLabelText(/contraseña/i, { selector: 'input[name="password"]' }), {
+      target: { value: 'password123' },
+    });
+    fireEvent.change(screen.getByLabelText(/confirmar contraseña/i, { selector: 'input[name="confirmPassword"]' }), {
+      target: { value: 'password456' },
+    });
+    
+    fireEvent.click(screen.getByRole('button', { name: /registrarse/i }));
+    
+    expect(screen.getByText(/las contraseñas no coinciden/i)).toBeInTheDocument();
+  });
+  
+
   it('envía nombre, email y clave cuando todos los datos son válidos', () => {
     const onEnviar = vi.fn()
     render(<FormularioRegistro onEnviar={onEnviar} />)

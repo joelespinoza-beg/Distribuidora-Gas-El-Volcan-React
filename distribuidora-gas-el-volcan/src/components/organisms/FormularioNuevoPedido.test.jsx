@@ -1,12 +1,27 @@
 import React from 'react';
 import { fireEvent, render, screen } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
-import { productosCilindros } from '../../data/productos';
 import FormularioNuevoPedido from './FormularioNuevoPedido';
+
+function llenarFormulario(cambios = {}) {
+  const datos = {
+    'Nombre del cliente': 'Ana Pérez',
+    'Teléfono': '+56912345678',
+    'Dirección de entrega': 'Av. Libertad 100, Chillán',
+    'Zona de despacho': 'Zona Centro',
+    'Cilindro de gas': 'CL002',
+    'Cantidad': '2',
+    ...cambios
+  };
+
+  for (const [etiqueta, valor] of Object.entries(datos)) {
+    fireEvent.change(screen.getByLabelText(etiqueta), { target: { value: valor } });
+  }
+}
 
 describe('FormularioNuevoPedido', () => {
   it('muestra los campos del pedido y calcula el precio residencial del catálogo', () => {
-    render(<FormularioNuevoPedido productos={productosCilindros} />);
+    render(<FormularioNuevoPedido />);
 
     fireEvent.change(screen.getByLabelText('Cilindro de gas'), {
       target: { value: 'CL002' }
@@ -18,30 +33,11 @@ describe('FormularioNuevoPedido', () => {
 
   it('envía los datos del cliente, el producto, el total y pago en efectivo', () => {
     const onEnviar = vi.fn();
-    render(
-      <FormularioNuevoPedido productos={productosCilindros} onEnviar={onEnviar} />
-    );
+    render(<FormularioNuevoPedido onEnviar={onEnviar} />);
 
-    fireEvent.change(screen.getByLabelText('Nombre del cliente'), {
-      target: { value: 'Ana Pérez' }
-    });
-    fireEvent.change(screen.getByLabelText('Teléfono'), {
-      target: { value: '+56912345678' }
-    });
-    fireEvent.change(screen.getByLabelText('Dirección de entrega'), {
-      target: { value: 'Av. Libertad 100, Chillán' }
-    });
-    fireEvent.change(screen.getByLabelText('Zona de despacho'), {
-      target: { value: 'Zona Centro' }
-    });
+    llenarFormulario();
     fireEvent.change(screen.getByLabelText('Tipo de cliente'), {
       target: { value: 'comercial' }
-    });
-    fireEvent.change(screen.getByLabelText('Cilindro de gas'), {
-      target: { value: 'CL002' }
-    });
-    fireEvent.change(screen.getByLabelText('Cantidad'), {
-      target: { value: '2' }
     });
     fireEvent.click(screen.getByRole('button', { name: 'Confirmar pedido' }));
 
@@ -58,5 +54,41 @@ describe('FormularioNuevoPedido', () => {
       metodoPago: 'efectivo',
       producto: expect.objectContaining({ nombre: 'Cilindro GLP 11 kg' })
     }));
+  });
+
+  it('muestra un error junto al campo y no envía el pedido si el teléfono es texto', () => {
+    const onEnviar = vi.fn();
+    render(<FormularioNuevoPedido onEnviar={onEnviar} />);
+
+    llenarFormulario({ 'Teléfono': 'hola' });
+    fireEvent.click(screen.getByRole('button', { name: 'Confirmar pedido' }));
+
+    expect(screen.getByText(/Ingresa un teléfono válido/)).toBeInTheDocument();
+    expect(onEnviar).not.toHaveBeenCalled();
+  });
+
+  it('muestra los errores de todos los campos obligatorios al enviar vacío', () => {
+    const onEnviar = vi.fn();
+    render(<FormularioNuevoPedido onEnviar={onEnviar} />);
+
+    fireEvent.click(screen.getByRole('button', { name: 'Confirmar pedido' }));
+
+    expect(screen.getByText('Ingresa el nombre del cliente')).toBeInTheDocument();
+    expect(screen.getByText('Ingresa tu teléfono')).toBeInTheDocument();
+    expect(screen.getByText('Ingresa la dirección de entrega')).toBeInTheDocument();
+    expect(screen.getByText('Selecciona una zona de despacho')).toBeInTheDocument();
+    expect(screen.getByText('Elige el cilindro que necesitas')).toBeInTheDocument();
+    expect(onEnviar).not.toHaveBeenCalled();
+  });
+
+  it('no permite pedir más unidades que el stock disponible', () => {
+    const onEnviar = vi.fn();
+    render(<FormularioNuevoPedido onEnviar={onEnviar} />);
+
+    llenarFormulario({ 'Cantidad': '99999' });
+    fireEvent.click(screen.getByRole('button', { name: 'Confirmar pedido' }));
+
+    expect(screen.getByText(/Solo quedan \d+ unidades disponibles/)).toBeInTheDocument();
+    expect(onEnviar).not.toHaveBeenCalled();
   });
 });

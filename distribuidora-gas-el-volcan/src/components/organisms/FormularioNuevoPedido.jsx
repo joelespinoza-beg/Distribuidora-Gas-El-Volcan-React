@@ -1,5 +1,10 @@
 import React, { useState } from 'react';
-import Boton from '../atoms/Boton';
+import { productosCilindros } from '../../data/productos';
+import {
+  validarObligatorio,
+  validarTelefono,
+  validarNumero
+} from '../../utils/validaciones';
 
 const zonasDespacho = [
   'Zona Centro',
@@ -9,17 +14,7 @@ const zonasDespacho = [
   'Zona Comercial'
 ];
 
-function FormularioNuevoPedido(props) {
-  const {
-    productos = [],
-    zonasDespacho: zonas = zonasDespacho,
-    onEnviar,
-    textoBoton,
-    claseBoton,
-    id,
-    className,
-    ...atributosSeccion
-  } = props;
+function FormularioNuevoPedido({ productos = productosCilindros, onEnviar }) {
   const [formulario, setFormulario] = useState({
     cliente: '',
     telefono: '',
@@ -29,6 +24,7 @@ function FormularioNuevoPedido(props) {
     productoId: '',
     cantidad: 1
   });
+  const [errores, setErrores] = useState({});
 
   const productoSeleccionado = productos.find(
     (producto) => producto.id === formulario.productoId
@@ -39,17 +35,46 @@ function FormularioNuevoPedido(props) {
       : productoSeleccionado.precioResidencial
     : 0;
 
+  function validar(datos) {
+    const producto = productos.find((item) => item.id === datos.productoId);
+
+    let errorCantidad = validarNumero(datos.cantidad, 1);
+    if (errorCantidad === '' && producto && datos.cantidad > producto.stock) {
+      errorCantidad = `Solo quedan ${producto.stock} unidades disponibles`;
+    }
+
+    return {
+      cliente: validarObligatorio(datos.cliente, 'Ingresa el nombre del cliente'),
+      telefono: validarTelefono(datos.telefono),
+      direccion: validarObligatorio(datos.direccion, 'Ingresa la dirección de entrega'),
+      zona: validarObligatorio(datos.zona, 'Selecciona una zona de despacho'),
+      productoId: validarObligatorio(datos.productoId, 'Elige el cilindro que necesitas'),
+      cantidad: errorCantidad
+    };
+  }
+
   function cambiarCampo(evento) {
     const { name, value } = evento.target;
-    setFormulario((actual) => ({
-      ...actual,
+    const nuevo = {
+      ...formulario,
       [name]: name === 'cantidad' ? Number(value) : value
-    }));
+    };
+
+    setFormulario(nuevo);
+
+    if (errores[name]) {
+      setErrores({ ...errores, [name]: validar(nuevo)[name] });
+    }
   }
 
   function enviar(evento) {
     evento.preventDefault();
-    if (!productoSeleccionado) return;
+
+    const nuevosErrores = validar(formulario);
+    setErrores(nuevosErrores);
+
+    const hayErrores = Object.values(nuevosErrores).some((mensaje) => mensaje !== '');
+    if (hayErrores || !productoSeleccionado) return;
 
     onEnviar?.({
       ...formulario,
@@ -60,26 +85,27 @@ function FormularioNuevoPedido(props) {
     });
   }
 
+  function clase(base, campo) {
+    return errores[campo] ? `${base} is-invalid` : base;
+  }
+
   return (
-    <section
-      {...atributosSeccion}
-      id={id}
-      className={className}
-      aria-labelledby="titulo-nuevo-pedido"
-    >
+    <section aria-labelledby="titulo-nuevo-pedido">
       <h2 id="titulo-nuevo-pedido" className="mb-4">Solicitar un pedido</h2>
-      <form onSubmit={enviar} className="row g-3">
+      {/* noValidate: desactiva los mensajes del navegador para que se vean los de React */}
+      <form onSubmit={enviar} noValidate className="row g-3">
         <div className="col-12 col-md-6">
           <label htmlFor="pedido-cliente" className="form-label">Nombre del cliente</label>
           <input
             id="pedido-cliente"
             name="cliente"
-            className="form-control"
+            className={clase('form-control', 'cliente')}
             value={formulario.cliente}
             onChange={cambiarCampo}
             autoComplete="name"
             required
           />
+          {errores.cliente && <div className="invalid-feedback">{errores.cliente}</div>}
         </div>
         <div className="col-12 col-md-6">
           <label htmlFor="pedido-telefono" className="form-label">Teléfono</label>
@@ -87,38 +113,41 @@ function FormularioNuevoPedido(props) {
             id="pedido-telefono"
             name="telefono"
             type="tel"
-            className="form-control"
+            className={clase('form-control', 'telefono')}
             value={formulario.telefono}
             onChange={cambiarCampo}
             autoComplete="tel"
             required
           />
+          {errores.telefono && <div className="invalid-feedback">{errores.telefono}</div>}
         </div>
         <div className="col-12 col-md-8">
           <label htmlFor="pedido-direccion" className="form-label">Dirección de entrega</label>
           <input
             id="pedido-direccion"
             name="direccion"
-            className="form-control"
+            className={clase('form-control', 'direccion')}
             value={formulario.direccion}
             onChange={cambiarCampo}
             autoComplete="street-address"
             required
           />
+          {errores.direccion && <div className="invalid-feedback">{errores.direccion}</div>}
         </div>
         <div className="col-12 col-md-4">
           <label htmlFor="pedido-zona" className="form-label">Zona de despacho</label>
           <select
             id="pedido-zona"
             name="zona"
-            className="form-select"
+            className={clase('form-select', 'zona')}
             value={formulario.zona}
             onChange={cambiarCampo}
             required
           >
             <option value="">Selecciona una zona</option>
-            {zonas.map((zona) => <option key={zona}>{zona}</option>)}
+            {zonasDespacho.map((zona) => <option key={zona}>{zona}</option>)}
           </select>
+          {errores.zona && <div className="invalid-feedback">{errores.zona}</div>}
         </div>
         <div className="col-12 col-md-4">
           <label htmlFor="pedido-tipo-cliente" className="form-label">Tipo de cliente</label>
@@ -138,7 +167,7 @@ function FormularioNuevoPedido(props) {
           <select
             id="pedido-producto"
             name="productoId"
-            className="form-select"
+            className={clase('form-select', 'productoId')}
             value={formulario.productoId}
             onChange={cambiarCampo}
             required
@@ -150,6 +179,7 @@ function FormularioNuevoPedido(props) {
               </option>
             ))}
           </select>
+          {errores.productoId && <div className="invalid-feedback">{errores.productoId}</div>}
         </div>
         <div className="col-12 col-md-3">
           <label htmlFor="pedido-cantidad" className="form-label">Cantidad</label>
@@ -157,23 +187,20 @@ function FormularioNuevoPedido(props) {
             id="pedido-cantidad"
             name="cantidad"
             type="number"
-            className="form-control"
+            className={clase('form-control', 'cantidad')}
             min="1"
             max={productoSeleccionado?.stock}
             value={formulario.cantidad}
             onChange={cambiarCampo}
             required
           />
+          {errores.cantidad && <div className="invalid-feedback">{errores.cantidad}</div>}
         </div>
         <div className="col-12 d-flex flex-wrap align-items-center justify-content-between gap-3">
           <p className="mb-0" aria-live="polite">
             Total estimado: <strong>${totalFormateado(precioUnitario * formulario.cantidad)}</strong>
           </p>
-          <Boton
-            type="submit"
-            texto={textoBoton || 'Confirmar pedido'}
-            className={claseBoton}
-          />
+          <button type="submit" className="btn btn-primary">Confirmar pedido</button>
         </div>
       </form>
     </section>

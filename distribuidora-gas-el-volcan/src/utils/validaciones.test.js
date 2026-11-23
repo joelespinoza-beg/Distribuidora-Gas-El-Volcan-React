@@ -74,12 +74,27 @@ describe('validarConfirmacion', () => {
 })
 
 describe('validarTelefono', () => {
+  it('rechaza un teléfono vacío', () => {
+    expect(validarTelefono('')).toBe('Ingresa tu teléfono')
+  })
+
   it('acepta teléfonos con entre 8 y 15 dígitos', () => {
     expect(validarTelefono('+56 9 1234-5678')).toBe('')
   })
 
-  it('rechaza teléfonos demasiado cortos o con letras', () => {
+  it('rechaza texto y teléfonos demasiado cortos', () => {
+    expect(validarTelefono('hola')).toContain('teléfono válido')
     expect(validarTelefono('123')).toContain('teléfono válido')
     expect(validarTelefono('12345678abc')).toContain('teléfono válido')
+  })
+
+  it('acepta celulares chilenos con o sin +56 y con espacios', () => {
+    expect(validarTelefono('912345678')).toBe('')
+    expect(validarTelefono('+56912345678')).toBe('')
+    expect(validarTelefono('+56 9 1234 5678')).toBe('')
+  })
+
+  it('acepta un teléfono fijo con código de zona', () => {
+    expect(validarTelefono('(42) 222 3344')).toBe('')
   })
 })

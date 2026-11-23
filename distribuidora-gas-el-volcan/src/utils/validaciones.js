@@ -1,6 +1,4 @@
-// Reglas de validación: funciones puras.
-// Reciben un valor y devuelven un mensaje de error,
-// o '' (texto vacío) si el valor está bien.
+
 
 export function validarObligatorio(valor, mensaje = 'Este campo es obligatorio') {
   if (!valor || String(valor).trim() === '') {
@@ -33,21 +31,6 @@ export function validarEmail(valor) {
   return '';
 }
 
-export function validarTelefono(valor) {
-  const obligatorio = validarObligatorio(valor, 'Ingresa tu teléfono');
-  if (obligatorio) return obligatorio;
-  if (!/^[+\d\s().-]+$/.test(valor.trim())) {
-    return 'Ingresa un teléfono válido (entre 8 y 15 dígitos)';
-  }
-
-  const digitos = valor.replace(/\D/g, '');
-  if (digitos.length < 8 || digitos.length > 15) {
-    return 'Ingresa un teléfono válido (entre 8 y 15 dígitos)';
-  }
-
-  return '';
-}
-
 export function validarClave(valor) {
   const obligatorio = validarObligatorio(valor, 'Ingresa tu clave');
   if (obligatorio) return obligatorio;
@@ -59,7 +42,6 @@ export function validarClave(valor) {
   return '';
 }
 
-// Número: rechaza texto vacío, texto que no es número y valores bajo el mínimo.
 export function validarNumero(valor, minimo = 0) {
   const texto = String(valor ?? '').trim();
 
@@ -80,13 +62,26 @@ export function validarNumero(valor, minimo = 0) {
   return '';
 }
 
-// Confirmación de clave: no puede estar vacía y debe ser igual a la clave.
 export function validarConfirmacion(clave, confirmacion) {
   const obligatorio = validarObligatorio(confirmacion, 'Repite tu clave');
   if (obligatorio) return obligatorio;
 
   if (clave !== confirmacion) {
     return 'Las claves no coinciden';
+  }
+
+  return '';
+}
+
+
+export function validarTelefono(valor) {
+  const obligatorio = validarObligatorio(valor, 'Ingresa tu teléfono');
+  if (obligatorio) return obligatorio;
+
+  const limpio = valor.replace(/[\s\-()]/g, '');
+
+  if (!/^(\+?56)?[2-9]\d{8}$/.test(limpio)) {
+    return 'Ingresa un teléfono válido (ejemplo: +56 9 1234 5678)';
   }
 
   return '';

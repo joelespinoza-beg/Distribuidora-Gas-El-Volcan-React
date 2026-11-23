@@ -1,47 +1,72 @@
-import { createContext, useContext, useState } from 'react';
+// src/context/PedidosContext.jsx
+import { createContext, useCallback, useContext, useEffect, useState } from 'react';
 import {
   listarPedidos,
+  obtenerPedido,
   crearPedido,
   asignarRepartidor,
   cambiarEstado as cambiarEstadoPedido
 } from '../services/pedidoService';
+import { useAutenticacion } from '../hooks/useAutenticacion';
 
 const PedidosContext = createContext(null);
 
 export function PedidosProvider({ children }) {
-  const [pedidos, setPedidos] = useState(() => listarPedidos());
+  const { usuario } = useAutenticacion();
+  const [pedidos, setPedidos] = useState([]);
+  const [cargando, setCargando] = useState(false);
 
-  function crear(datos) {
-    const nuevo = crearPedido(datos);
-    setPedidos(listarPedidos());
+  const recargar = useCallback(async () => {
+    if (!usuario) {
+      setPedidos([]);
+      return;
+    }
+    try {
+      setCargando(true);
+      const lista = await listarPedidos();
+      setPedidos(lista);
+    } catch {
+      setPedidos([]);
+    } finally {
+      setCargando(false);
+    }
+  }, [usuario]);
+
+  useEffect(() => {
+    recargar();
+  }, [recargar]);
+
+  async function crear(datos) {
+    const nuevo = await crearPedido(datos);
+    await recargar();
     return nuevo;
   }
 
-  function asignar(id, repartidorId) {
-    asignarRepartidor(id, repartidorId);
-    setPedidos(listarPedidos());
+  async function asignar(id, repartidorId) {
+    await asignarRepartidor(id, repartidorId);
+    await recargar();
   }
 
-  function cambiarEstado(id, estado) {
-    cambiarEstadoPedido(id, estado);
-    setPedidos(listarPedidos());
+  async function cambiarEstado(id, estado) {
+    await cambiarEstadoPedido(id, estado);
+    await recargar();
   }
 
-  function obtener(id) {
-    return pedidos.find((pedido) => pedido.id === id) ?? null;
+  async function buscarPorId(id) {
+    return obtenerPedido(id);
   }
 
-  const valor = { pedidos, crear, asignar, cambiarEstado, obtener };
-
-  return <PedidosContext.Provider value={valor}>{children}</PedidosContext.Provider>;
+  return (
+    <PedidosContext.Provider value={{ pedidos, cargando, recargar, crear, asignar, cambiarEstado, buscarPorId }}>
+      {children}
+    </PedidosContext.Provider>
+  );
 }
 
 export function usePedidos() {
   const contexto = useContext(PedidosContext);
-
   if (contexto === null) {
     throw new Error('usePedidos debe usarse dentro de <PedidosProvider>');
   }
-
   return contexto;
 }
