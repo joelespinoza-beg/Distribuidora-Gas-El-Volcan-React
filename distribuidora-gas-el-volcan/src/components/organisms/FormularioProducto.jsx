@@ -14,8 +14,8 @@ const VACIO = {
   stock: ''
 };
 
-// Crea o edita un producto. Si recibe "producto", está en modo edición.
-// El estado y los errores viven aquí; al estar todo correcto avisa con onEnviar.
+
+
 function FormularioProducto({ producto = null, onEnviar, onCancelar }) {
   const editando = producto !== null;
   const [campos, setCampos] = useState(editando ? { ...producto } : VACIO);

@@ -10,6 +10,8 @@ function Login(props) {
   const ubicacion = useLocation();
   const { iniciarSesion } = useAutenticacion();
   const [error, setError] = useState('');
+  const [cargando, setCargando] = useState(false);
+  const { iniciarSesion, errorSesion } = useAutenticacion();
 
   useTituloPagina('Ingresar');
 
@@ -35,7 +37,8 @@ function Login(props) {
       <SeccionLogin
         onEnviar={manejarEnvio}
         onRegistro={() => navigate('/registro')}
-        error={error}
+        error={error || errorSesion}
+        cargando={cargando}
       />
     </PlantillaPublica>
   );

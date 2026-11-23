@@ -16,7 +16,7 @@ function Inicio() {
 
   useTituloPagina('Inicio');
 
-  // En el inicio se muestran solo los cilindros, con precio residencial
+
   const cilindros = productos
     .filter((producto) => producto.categoria === 'Cilindros de Gas')
     .map((producto) => ({

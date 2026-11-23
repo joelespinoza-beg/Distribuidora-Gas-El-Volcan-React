@@ -20,7 +20,7 @@ const productoNuevo = {
 }
 
 describe('productoService (CRUD con localStorage)', () => {
-  // Preparación y limpieza: cada caso parte con localStorage vacío
+
   beforeEach(() => {
     localStorage.clear()
   })

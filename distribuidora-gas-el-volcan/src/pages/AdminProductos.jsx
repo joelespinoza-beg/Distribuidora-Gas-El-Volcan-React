@@ -11,8 +11,8 @@ function AdminProductos(props) {
   const { productos, crear, actualizar, eliminar } = useProductos();
 
   const [formularioAbierto, setFormularioAbierto] = useState(false);
-  const [enEdicion, setEnEdicion] = useState(null); // producto que se edita (null = nuevo)
-  const [aEliminar, setAEliminar] = useState(null); // producto pendiente de confirmar
+  const [enEdicion, setEnEdicion] = useState(null);
+  const [aEliminar, setAEliminar] = useState(null);
   const [mensaje, setMensaje] = useState('');
   const [error, setError] = useState('');
 

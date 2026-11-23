@@ -3,7 +3,7 @@ import Boton from '../atoms/Boton';
 import Precio from '../atoms/Precio';
 import { productosCatalogo } from '../../data/productos';
 
-// Si recibe onEditar y/o onEliminar, agrega una columna de acciones (panel de administración).
+
 function TablaProductos({ productos = productosCatalogo, onEditar, onEliminar }) {
   const hayAcciones = Boolean(onEditar || onEliminar);
 

@@ -10,6 +10,8 @@ function Registro(props) {
   const navigate = useNavigate();
   const { crearCuenta } = useAutenticacion();
   const [error, setError] = useState('');
+  const [cargando, setCargando] = useState(false);
+  const { crearCuenta } = useAutenticacion();
 
   useTituloPagina('Crear cuenta');
 
@@ -30,7 +32,7 @@ function Registro(props) {
           <p className="text-muted">Regístrate para hacer y seguir tus pedidos.</p>
         </div>
 
-        <FormularioRegistro onEnviar={manejarEnvio} error={error} />
+        <FormularioRegistro onEnviar={manejarEnvio} error={error} cargando={cargando} />
 
         <div className="mt-4 text-center">
           <p className="text-muted mb-2">¿Ya tienes una cuenta?</p>

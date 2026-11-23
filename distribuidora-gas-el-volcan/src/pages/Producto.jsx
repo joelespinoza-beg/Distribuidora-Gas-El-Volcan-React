@@ -7,7 +7,7 @@ import { useProductos } from '../context/ProductosContext';
 import { useCarrito } from '../context/CarritoContext';
 import { useTituloPagina } from '../hooks/useTituloPagina';
 
-// Página: detalle de un producto. Ruta: /producto/:id (el id es el código, por ejemplo CL002)
+
 function Producto() {
   const navigate = useNavigate();
   const params = useParams();
@@ -15,7 +15,7 @@ function Producto() {
   const { agregar } = useCarrito();
   const [error, setError] = useState('');
 
-  // Los códigos son texto, así que se comparan tal cual (sin Number)
+
   const producto = productos.find((item) => item.id === params.id);
 
   useTituloPagina(producto ? producto.nombre : 'Producto no encontrado');
@@ -48,7 +48,7 @@ function Producto() {
         </ul>
 
         <div className="d-flex flex-wrap gap-2">
-          {/* navigate(-1) vuelve a la página anterior del historial */}
+
           <Boton texto="Volver" variante="outline-secondary" onClick={() => navigate(-1)} />
           <Boton
             texto="Agregar al carrito"

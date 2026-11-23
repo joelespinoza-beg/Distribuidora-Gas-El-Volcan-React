@@ -133,6 +133,10 @@ npm install
 npm run dev
 ```
 
+Configura `VITE_API_BASE_URL` en un archivo `.env.local` antes de iniciar Vite.
+Puedes partir de `.env.example`. Esta variable se incorpora al bundle del frontend
+y solo debe contener la URL pública de la API; nunca credenciales ni secretos.
+
 Para ejecutar las pruebas y cobertura:
 
 ```bash

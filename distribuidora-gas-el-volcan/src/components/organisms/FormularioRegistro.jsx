@@ -8,7 +8,7 @@ import {
   validarConfirmacion
 } from '../../utils/validaciones';
 
-// Una regla por campo: recibe todos los campos y devuelve el mensaje de error ('' si está bien)
+
 const reglas = {
   nombre: (campos) => validarObligatorio(campos.nombre, 'Ingresa tu nombre'),
   email: (campos) => validarEmail(campos.email),
@@ -18,8 +18,8 @@ const reglas = {
 
 const VACIO = { nombre: '', email: '', clave: '', confirmacion: '' };
 
-// Formulario de registro: guarda los campos y los errores, y avisa con onEnviar cuando todo está correcto.
-function FormularioRegistro({ onEnviar, error = '' }) {
+
+function FormularioRegistro({ onEnviar, error = '', cargando = false }) {
   const [campos, setCampos] = useState(VACIO);
   const [errores, setErrores] = useState({});
 
@@ -29,7 +29,7 @@ function FormularioRegistro({ onEnviar, error = '' }) {
 
     setCampos(nuevos);
 
-    // Si el campo ya tenía un error, se revisa de nuevo mientras la persona corrige
+
     if (errores[name]) {
       setErrores({ ...errores, [name]: reglas[name](nuevos) });
     }
@@ -38,7 +38,7 @@ function FormularioRegistro({ onEnviar, error = '' }) {
   function enviar(evento) {
     evento.preventDefault();
 
-    // Se validan TODOS los campos para mostrar todos los errores juntos
+
     const nuevosErrores = {};
     for (const nombre of Object.keys(reglas)) {
       nuevosErrores[nombre] = reglas[nombre](campos);
@@ -98,7 +98,12 @@ function FormularioRegistro({ onEnviar, error = '' }) {
           required
         />
 
-        <Boton texto="Crear cuenta" type="submit" className="w-100" />
+        <Boton
+          texto={cargando ? 'Creando cuenta...' : 'Crear cuenta'}
+          type="submit"
+          className="w-100"
+          disabled={cargando}
+        />
       </form>
     </div>
   );
