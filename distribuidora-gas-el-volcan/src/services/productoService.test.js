@@ -1,5 +1,15 @@
-import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
-import { productosCatalogo } from '../data/productos'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
+
+vi.mock('./api', () => ({
+  api: {
+    get: vi.fn(),
+    post: vi.fn(),
+    put: vi.fn(),
+    delete: vi.fn()
+  }
+}))
+
+import { api } from './api'
 import {
   listarProductos,
   obtenerProducto,
@@ -19,60 +29,42 @@ const productoNuevo = {
   stock: 5
 }
 
-describe('productoService (CRUD con localStorage)', () => {
+describe('productoService (CRUD con Axios)', () => {
+  beforeEach(() => vi.clearAllMocks())
 
-  beforeEach(() => {
-    localStorage.clear()
+  it('lista los productos desde la API', async () => {
+    api.get.mockResolvedValue({ data: [productoNuevo] })
+
+    await expect(listarProductos()).resolves.toEqual([productoNuevo])
+    expect(api.get).toHaveBeenCalledWith('/productos')
   })
 
-  afterEach(() => {
-    localStorage.clear()
+  it('obtiene un producto por identificador', async () => {
+    api.get.mockResolvedValue({ data: productoNuevo })
+
+    await expect(obtenerProducto('TEST01')).resolves.toEqual(productoNuevo)
+    expect(api.get).toHaveBeenCalledWith('/productos/TEST01')
   })
 
-  it('lista los productos de partida la primera vez', () => {
-    expect(listarProductos()).toHaveLength(productosCatalogo.length)
+  it('crea un producto con el DTO esperado', async () => {
+    api.post.mockResolvedValue({ data: productoNuevo })
+
+    await expect(crearProducto(productoNuevo)).resolves.toEqual(productoNuevo)
+    expect(api.post).toHaveBeenCalledWith('/productos', productoNuevo)
   })
 
-  it('crea un producto y lo deja guardado', () => {
-    crearProducto(productoNuevo)
+  it('actualiza un producto mediante PUT', async () => {
+    api.put.mockResolvedValue({ data: { ...productoNuevo, stock: 99 } })
 
-    expect(listarProductos()).toHaveLength(productosCatalogo.length + 1)
-    expect(obtenerProducto('TEST01')).toEqual(productoNuevo)
+    await expect(actualizarProducto('TEST01', { stock: 99 })).resolves.toMatchObject({ stock: 99 })
+    expect(api.put).toHaveBeenCalledWith('/productos/TEST01', { stock: 99 })
   })
 
-  it('no permite crear dos productos con el mismo código', () => {
-    crearProducto(productoNuevo)
+  it('elimina un producto mediante DELETE', async () => {
+    api.delete.mockResolvedValue({ data: null })
 
-    expect(() => crearProducto(productoNuevo)).toThrow('Ya existe un producto')
-  })
+    await eliminarProducto('TEST01')
 
-  it('actualiza solo los campos indicados', () => {
-    crearProducto(productoNuevo)
-
-    const actualizado = actualizarProducto('TEST01', { stock: 99 })
-
-    expect(actualizado.stock).toBe(99)
-    expect(actualizado.nombre).toBe('Producto de prueba')
-  })
-
-  it('elimina un producto', () => {
-    crearProducto(productoNuevo)
-
-    eliminarProducto('TEST01')
-
-    expect(obtenerProducto('TEST01')).toBeNull()
-  })
-
-  it('devuelve null si el producto no existe', () => {
-    expect(obtenerProducto('NO-EXISTE')).toBeNull()
-  })
-
-  it('persiste los cambios en localStorage usando setItem', () => {
-    const spySetItem = vi.spyOn(Storage.prototype, 'setItem')
-
-    crearProducto(productoNuevo)
-
-    expect(spySetItem).toHaveBeenCalledWith('productos', expect.any(String))
-    spySetItem.mockRestore()
+    expect(api.delete).toHaveBeenCalledWith('/productos/TEST01')
   })
 })

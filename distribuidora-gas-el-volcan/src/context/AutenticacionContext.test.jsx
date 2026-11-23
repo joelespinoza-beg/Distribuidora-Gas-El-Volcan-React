@@ -1,11 +1,23 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { fireEvent, render, screen } from '@testing-library/react';
 import { useState } from 'react';
+
+vi.mock('../services/usuarioService', () => ({
+  autenticar: vi.fn(),
+  registrarUsuario: vi.fn(),
+  obtenerPerfil: vi.fn(),
+  leerAccessToken: vi.fn(),
+  guardarAccessToken: vi.fn(),
+  eliminarAccessToken: vi.fn()
+}));
+
 import { AutenticacionProvider } from './AutenticacionContext';
 import { useAutenticacion } from '../hooks/useAutenticacion';
 import {
+  autenticar,
   guardarAccessToken,
-  leerAccessToken
+  leerAccessToken,
+  obtenerPerfil
 } from '../services/usuarioService';
 
 function EstadoSesion() {
@@ -36,24 +48,16 @@ function InicioSesionPrueba() {
 
 describe('AutenticacionProvider', () => {
   beforeEach(() => {
-    vi.stubEnv('VITE_API_BASE_URL', 'http://api.test/api/v1');
-    vi.stubGlobal('fetch', vi.fn());
-    localStorage.clear();
+    vi.clearAllMocks();
   });
 
   afterEach(() => {
-    vi.unstubAllEnvs();
-    vi.unstubAllGlobals();
-    localStorage.clear();
+    vi.clearAllMocks();
   });
 
   it('recupera el perfil al recargar con un accessToken guardado', async () => {
-    guardarAccessToken('jwt-de-prueba');
-    fetch.mockResolvedValue({
-      ok: true,
-      status: 200,
-      text: async () => JSON.stringify({ nombre: 'Joel' })
-    });
+    leerAccessToken.mockReturnValue('jwt-de-prueba');
+    obtenerPerfil.mockResolvedValue({ nombre: 'Joel' });
 
     render(
       <AutenticacionProvider>
@@ -62,24 +66,14 @@ describe('AutenticacionProvider', () => {
     );
 
     expect(await screen.findByText('Joel')).toBeInTheDocument();
-    expect(fetch).toHaveBeenCalledWith('http://api.test/api/v1/auth/me', {
-      method: 'GET',
-      headers: { Authorization: 'Bearer jwt-de-prueba' }
-    });
+    expect(leerAccessToken).toHaveBeenCalled();
+    expect(obtenerPerfil).toHaveBeenCalledWith();
   });
 
   it('guarda el accessToken del login y carga el perfil autenticado', async () => {
-    fetch
-      .mockResolvedValueOnce({
-        ok: true,
-        status: 200,
-        text: async () => JSON.stringify({ accessToken: 'jwt-nuevo' })
-      })
-      .mockResolvedValueOnce({
-        ok: true,
-        status: 200,
-        text: async () => JSON.stringify({ nombre: 'Joel' })
-      });
+    leerAccessToken.mockReturnValue(null);
+    autenticar.mockResolvedValue({ accessToken: 'jwt-nuevo' });
+    obtenerPerfil.mockResolvedValue({ nombre: 'Joel' });
 
     render(
       <AutenticacionProvider>
@@ -90,15 +84,8 @@ describe('AutenticacionProvider', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Ingresar' }));
 
     expect(await screen.findByText('Joel')).toBeInTheDocument();
-    expect(leerAccessToken()).toBe('jwt-nuevo');
-    expect(fetch).toHaveBeenNthCalledWith(1, 'http://api.test/api/v1/auth/login', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email: 'joel@mail.cl', clave: '123456' })
-    });
-    expect(fetch).toHaveBeenNthCalledWith(2, 'http://api.test/api/v1/auth/me', {
-      method: 'GET',
-      headers: { Authorization: 'Bearer jwt-nuevo' }
-    });
+    expect(autenticar).toHaveBeenCalledWith({ email: 'joel@mail.cl', clave: '123456' });
+    expect(guardarAccessToken).toHaveBeenCalledWith('jwt-nuevo');
+    expect(obtenerPerfil).toHaveBeenCalledWith();
   });
 });

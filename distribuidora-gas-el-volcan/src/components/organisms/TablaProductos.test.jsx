@@ -31,6 +31,6 @@ describe('TablaProductos', () => {
     expect(mockOnEditar).toHaveBeenCalledWith(mockProductos[0]);
 
     fireEvent.click(botonEliminar);
-    expect(mockOnEliminar).toHaveBeenCalledWith(mockProductos[0].id);
+    expect(mockOnEliminar).toHaveBeenCalledWith(mockProductos[0]);
   });
 });

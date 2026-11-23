@@ -19,16 +19,16 @@ describe('FormularioRegistro', () => {
   it('muestra un error si las contraseñas no coinciden', () => {
     render(<FormularioRegistro />);
     
-    fireEvent.change(screen.getByLabelText(/contraseña/i, { selector: 'input[name="password"]' }), {
+    fireEvent.change(screen.getByLabelText(/^Contraseña/), {
       target: { value: 'password123' },
     });
-    fireEvent.change(screen.getByLabelText(/confirmar contraseña/i, { selector: 'input[name="confirmPassword"]' }), {
+    fireEvent.change(screen.getByLabelText(/Repite la contraseña/), {
       target: { value: 'password456' },
     });
     
-    fireEvent.click(screen.getByRole('button', { name: /registrarse/i }));
+    fireEvent.click(screen.getByRole('button', { name: 'Crear cuenta' }));
     
-    expect(screen.getByText(/las contraseñas no coinciden/i)).toBeInTheDocument();
+    expect(screen.getByText(/las claves no coinciden/i)).toBeInTheDocument();
   });
   
 

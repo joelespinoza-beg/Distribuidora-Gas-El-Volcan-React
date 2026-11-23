@@ -1,4 +1,14 @@
-import { describe, it, expect, beforeEach, afterEach } from 'vitest'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
+
+vi.mock('./api', () => ({
+  api: {
+    get: vi.fn(),
+    post: vi.fn(),
+    patch: vi.fn()
+  }
+}))
+
+import { api } from './api'
 import {
   listarPedidos,
   obtenerPedido,
@@ -9,50 +19,59 @@ import {
 
 const datosPedido = {
   cliente: 'María Soto',
+  telefono: '+56912345678',
   direccion: 'Av. Libertad 123, Chillán',
-  producto: { id: 'CL003', nombre: 'Cilindro GLP 15 kg' },
-  cantidad: 1,
-  total: 16000
+  zona: 'Zona Centro',
+  tipoCliente: 'residencial',
+  metodoPago: 'efectivo al recibir',
+  productos: [{ id: 'CL003', cantidad: 1 }]
 }
 
 describe('pedidoService', () => {
-  beforeEach(() => {
-    localStorage.clear()
+  beforeEach(() => vi.clearAllMocks())
+
+  it('lista los pedidos desde la API', async () => {
+    api.get.mockResolvedValue({ data: [{ id: 'P1' }] })
+
+    await expect(listarPedidos()).resolves.toEqual([{ id: 'P1' }])
+    expect(api.get).toHaveBeenCalledWith('/pedidos')
   })
 
-  afterEach(() => {
-    localStorage.clear()
+  it('obtiene un pedido por identificador', async () => {
+    api.get.mockResolvedValue({ data: { id: 'P1' } })
+
+    await expect(obtenerPedido('P1')).resolves.toEqual({ id: 'P1' })
+    expect(api.get).toHaveBeenCalledWith('/pedidos/P1')
   })
 
-  it('no tiene pedidos al comenzar', () => {
-    expect(listarPedidos()).toEqual([])
+  it('envía el pedido con el DTO esperado', async () => {
+    api.post.mockResolvedValue({ data: { id: 'P1', estado: 'pendiente' } })
+
+    await expect(crearPedido(datosPedido)).resolves.toMatchObject({ estado: 'pendiente' })
+    expect(api.post).toHaveBeenCalledWith('/pedidos', {
+      cliente: 'María Soto',
+      telefono: '+56912345678',
+      direccion: 'Av. Libertad 123, Chillán',
+      zona: 'Zona Centro',
+      tipoCliente: 'residencial',
+      metodoPago: 'efectivo al recibir',
+      productos: [{ id: 'CL003', cantidad: 1 }]
+    })
   })
 
-  it('crea el pedido como pendiente, sin repartidor y con números distintos', () => {
-    const primero = crearPedido(datosPedido)
-    const segundo = crearPedido(datosPedido)
+  it('asigna un repartidor mediante PATCH', async () => {
+    api.patch.mockResolvedValue({ data: { id: 'P1', estado: 'asignado' } })
 
-    expect(primero.estado).toBe('pendiente')
-    expect(primero.repartidorId).toBeNull()
-    expect(segundo.id).toBe(primero.id + 1)
-    expect(listarPedidos()).toHaveLength(2)
+    await asignarRepartidor('P1', 'R1')
+
+    expect(api.patch).toHaveBeenCalledWith('/pedidos/P1/asignar', { repartidorId: 'R1' })
   })
 
-  it('al asignar un repartidor el pedido pasa a asignado', () => {
-    const pedido = crearPedido(datosPedido)
+  it('cambia el estado mediante PATCH', async () => {
+    api.patch.mockResolvedValue({ data: { id: 'P1', estado: 'en_camino' } })
 
-    asignarRepartidor(pedido.id, 'R1')
+    await cambiarEstado('P1', 'en_camino')
 
-    const guardado = obtenerPedido(pedido.id)
-    expect(guardado.repartidorId).toBe('R1')
-    expect(guardado.estado).toBe('asignado')
-  })
-
-  it('cambia el estado del pedido y lo deja guardado', () => {
-    const pedido = crearPedido(datosPedido)
-
-    cambiarEstado(pedido.id, 'en_camino')
-
-    expect(obtenerPedido(pedido.id).estado).toBe('en_camino')
+    expect(api.patch).toHaveBeenCalledWith('/pedidos/P1/estado', { estado: 'en_camino' })
   })
 })

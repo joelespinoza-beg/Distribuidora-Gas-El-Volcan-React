@@ -1,6 +1,14 @@
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
+
+vi.mock('../../hooks/useAutenticacion', () => ({
+  useAutenticacion: () => ({
+    usuario: { nombre: 'Joel', rol: 'admin' },
+    cerrarSesion: vi.fn()
+  })
+}))
+
 import PlantillaAdmin from './PlantillaAdmin'
 
 describe('PlantillaAdmin', () => {
@@ -13,9 +21,10 @@ describe('PlantillaAdmin', () => {
       </MemoryRouter>
     )
 
-    expect(screen.getByRole('link', { name: 'Panel Gas El Volcán' })).toBeInTheDocument()
-    expect(screen.getByRole('link', { name: 'Pedidos del día' })).toHaveClass('active')
-    expect(screen.getByRole('link', { name: 'Salir' })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: 'Panel Admin' })).toBeInTheDocument()
+    expect(screen.getByRole('link', { name: 'Productos' })).toBeInTheDocument()
+    expect(screen.getByRole('link', { name: 'Usuarios' })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Cerrar Sesión' })).toBeInTheDocument()
     expect(screen.getByRole('heading', { name: 'Vista de operadora' })).toBeInTheDocument()
   })
 })
