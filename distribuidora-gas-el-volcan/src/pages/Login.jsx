@@ -20,8 +20,14 @@ function Login(props) {
     setCargando(true);
     setError('');
     try {
-      await iniciarSesion(datos);
-      navigate('/');
+      const perfil = await iniciarSesion(datos);
+      const rutasPorRol = {
+        ADMIN: '/admin/productos',
+        OPERADORA: '/operadora',
+        REPARTIDOR: '/repartidor'
+      };
+      const rol = String(perfil?.rol || '').trim().toUpperCase();
+      navigate(ubicacion.state?.from || rutasPorRol[rol] || '/', { replace: true });
     } catch (fallo) {
       setError(fallo.message || 'Correo o clave incorrectos');
     } finally {
