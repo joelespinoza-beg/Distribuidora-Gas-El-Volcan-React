@@ -21,7 +21,10 @@ function RutaProtegida(props) {
     );
   }
 
-  if (props.rolesPermitidos && !props.rolesPermitidos.includes(usuario.rol)) {
+  const rolUsuario = String(usuario.rol || '').trim().toUpperCase();
+  const rolesPermitidos = props.rolesPermitidos?.map((rol) => String(rol).trim().toUpperCase());
+
+  if (rolesPermitidos && !rolesPermitidos.includes(rolUsuario)) {
     return (
       <div className="container py-5">
         <div className="alert alert-danger" role="alert">

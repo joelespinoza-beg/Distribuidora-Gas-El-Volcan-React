@@ -15,18 +15,22 @@ export function PedidosProvider({ children }) {
   const { usuario } = useAutenticacion();
   const [pedidos, setPedidos] = useState([]);
   const [cargando, setCargando] = useState(false);
+  const [error, setError] = useState('');
 
   const recargar = useCallback(async () => {
     if (!usuario) {
       setPedidos([]);
+      setError('');
       return;
     }
     try {
       setCargando(true);
       const lista = await listarPedidos();
       setPedidos(lista);
-    } catch {
+      setError('');
+    } catch (fallo) {
       setPedidos([]);
+      setError(fallo.message || 'No se pudieron cargar los pedidos.');
     } finally {
       setCargando(false);
     }
@@ -57,7 +61,7 @@ export function PedidosProvider({ children }) {
   }
 
   return (
-    <PedidosContext.Provider value={{ pedidos, cargando, recargar, crear, asignar, cambiarEstado, buscarPorId }}>
+    <PedidosContext.Provider value={{ pedidos, cargando, error, recargar, crear, asignar, cambiarEstado, buscarPorId }}>
       {children}
     </PedidosContext.Provider>
   );

@@ -8,8 +8,10 @@ import {
   listarUsuarios,
   crearUsuarioAdmin,
   actualizarUsuario,
+  cambiarRolUsuario,
   eliminarUsuario
 } from '../services/usuarioService';
+import { listarRepartidores } from '../services/repartidorService';
 import { useTituloPagina } from '../hooks/useTituloPagina';
 
 const ROLES = [
@@ -19,10 +21,17 @@ const ROLES = [
   { valor: 'admin', texto: 'Administrador' }
 ];
 
-const FORM_INICIAL = { nombre: '', email: '', clave: '', rol: 'cliente' };
+const FORM_INICIAL = {
+  nombre: '',
+  email: '',
+  clave: '',
+  rol: 'cliente',
+  repartidorCodigo: ''
+};
 
 export default function AdminUsuarios() {
   const [usuarios, setUsuarios] = useState([]);
+  const [repartidores, setRepartidores] = useState([]);
   const [formulario, setFormulario] = useState(FORM_INICIAL);
   const [editandoId, setEditandoId] = useState(null);
   const [mensaje, setMensaje] = useState('');
@@ -40,7 +49,25 @@ export default function AdminUsuarios() {
   }
 
   useEffect(() => {
-    cargar();
+    let activo = true;
+    listarUsuarios()
+      .then((lista) => {
+        if (activo) setUsuarios(lista);
+      })
+      .catch((err) => {
+        if (activo) setError(err.message);
+      });
+    listarRepartidores()
+      .then((lista) => {
+        if (activo) setRepartidores(lista);
+      })
+      .catch((err) => {
+        if (activo) setError(err.message);
+      });
+
+    return () => {
+      activo = false;
+    };
   }, []);
 
   function cambiar(e) {
@@ -49,7 +76,13 @@ export default function AdminUsuarios() {
 
   function iniciarEdicion(usuario) {
     setEditandoId(usuario.id);
-    setFormulario({ nombre: usuario.nombre, email: usuario.email, clave: '', rol: usuario.rol });
+    setFormulario({
+      nombre: usuario.nombre,
+      email: usuario.email,
+      clave: '',
+      rol: String(usuario.rol).toLowerCase(),
+      repartidorCodigo: usuario.repartidorCodigo || ''
+    });
     setMensaje('');
     setError('');
   }
@@ -63,9 +96,22 @@ export default function AdminUsuarios() {
     e.preventDefault();
     try {
       if (editandoId) {
-        const cambios = { nombre: formulario.nombre, email: formulario.email, rol: formulario.rol };
+        const usuarioActual = usuarios.find((usuario) => usuario.id === editandoId);
+        const cambios = { nombre: formulario.nombre, email: formulario.email };
         if (formulario.clave) cambios.clave = formulario.clave;
         await actualizarUsuario(editandoId, cambios);
+        const rolActual = String(usuarioActual?.rol || '').toLowerCase();
+        const repartidorActual = usuarioActual?.repartidorCodigo || '';
+        if (
+          formulario.rol !== rolActual ||
+          formulario.repartidorCodigo !== repartidorActual
+        ) {
+          await cambiarRolUsuario(
+            editandoId,
+            formulario.rol,
+            formulario.repartidorCodigo
+          );
+        }
         setMensaje('Usuario actualizado correctamente.');
       } else {
         await crearUsuarioAdmin(formulario);
@@ -111,6 +157,23 @@ export default function AdminUsuarios() {
           <div className="col-md-3">
             <CampoSelector id="u-rol" name="rol" label="Rol" value={formulario.rol} onChange={cambiar} opciones={ROLES} required />
           </div>
+          {formulario.rol === 'repartidor' && (
+            <div className="col-md-3">
+              <CampoSelector
+                id="u-repartidor"
+                name="repartidorCodigo"
+                label="Repartidor asignado"
+                value={formulario.repartidorCodigo}
+                onChange={cambiar}
+                opciones={repartidores.map((repartidor) => ({
+                  valor: repartidor.id,
+                  texto: repartidor.nombre
+                }))}
+                placeholder="Selecciona un repartidor"
+                required
+              />
+            </div>
+          )}
         </div>
         <div className="d-flex gap-2">
           <Boton type="submit" texto={editandoId ? 'Guardar cambios' : 'Crear usuario'} />

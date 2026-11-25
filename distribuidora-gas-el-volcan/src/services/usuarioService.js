@@ -30,17 +30,32 @@ export async function listarUsuarios() {
 }
 
 export async function crearUsuarioAdmin(datos) {
-  const { data } = await api.post('/usuarios', {
+  const rol = String(datos.rol).trim().toUpperCase();
+  const usuario = {
     nombre: datos.nombre.trim(),
     email: datos.email.trim().toLowerCase(),
     clave: datos.clave,
-    rol: datos.rol
-  });
+    rol
+  };
+  if (rol === 'REPARTIDOR') {
+    usuario.repartidorCodigo = datos.repartidorCodigo;
+  }
+
+  const { data } = await api.post('/usuarios', usuario);
   return data;
 }
 
 export async function actualizarUsuario(id, cambios) {
   const { data } = await api.put(`/usuarios/${id}`, cambios);
+  return data;
+}
+
+export async function cambiarRolUsuario(id, rol, repartidorCodigo) {
+  const payload = { rol: String(rol).trim().toUpperCase() };
+  if (payload.rol === 'REPARTIDOR' && repartidorCodigo) {
+    payload.repartidorCodigo = repartidorCodigo;
+  }
+  const { data } = await api.patch(`/usuarios/${id}/rol`, payload);
   return data;
 }
 

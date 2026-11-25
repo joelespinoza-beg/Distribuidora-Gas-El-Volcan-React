@@ -4,22 +4,9 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import './index.css';
 import './styles/componentes.css';
 import App from './App.jsx';
-import { ProductosProvider } from './context/ProductosContext';
-import { PedidosProvider } from './context/PedidosContext';
-import { CarritoProvider } from './context/CarritoContext';
-import { AutenticacionProvider } from './context/AutenticacionContext';
-
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-    <AutenticacionProvider>
-      <ProductosProvider>
-        <PedidosProvider>
-          <CarritoProvider>
-            <App />
-          </CarritoProvider>
-        </PedidosProvider>
-      </ProductosProvider>
-    </AutenticacionProvider>
+    <App />
   </StrictMode>,
 );
