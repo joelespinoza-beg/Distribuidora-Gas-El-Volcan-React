@@ -9,6 +9,13 @@ import RutaProtegida from './components/atoms/RutaProtegida';
 
 // Importaciones de páginas
 import Inicio from './pages/Inicio';
+import Catalogo from './pages/Catalogo';
+import Categorias from './pages/Categorias';
+import Ofertas from './pages/Ofertas';
+import Producto from './pages/Producto';
+import Nosotros from './pages/Nosotros';
+import Blog from './pages/Blog';
+import NuevoPedido from './pages/NuevoPedido';
 import Login from './pages/Login';
 import Registro from './pages/Registro';
 import Carrito from './pages/Carrito';
@@ -31,10 +38,17 @@ function App(props) {
               <Routes>
                 {/* Rutas Públicas */}
                 <Route path="/" element={<Inicio />} />
+                <Route path="/catalogo" element={<Catalogo />} />
+                <Route path="/categorias" element={<Categorias />} />
+                <Route path="/ofertas" element={<Ofertas />} />
+                <Route path="/producto/:id" element={<Producto />} />
+                <Route path="/nosotros" element={<Nosotros />} />
+                <Route path="/blog" element={<Blog />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/registro" element={<Registro />} />
                 <Route path="/carrito" element={<Carrito />} />
                 <Route path="/checkout" element={<Checkout />} />
+                <Route path="/pedido/nuevo" element={<NuevoPedido />} />
                 <Route path="/pedido/resultado/:id" element={<PedidoConfirmadoONoRealizado />} />
                 <Route path="/seguimiento" element={<SeguimientoPedido />} />
                 <Route path="/seguimiento/:id" element={<SeguimientoPedido />} />
