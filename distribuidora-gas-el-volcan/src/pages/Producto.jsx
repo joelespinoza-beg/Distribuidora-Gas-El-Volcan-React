@@ -11,7 +11,7 @@ import { useTituloPagina } from '../hooks/useTituloPagina';
 function Producto() {
   const navigate = useNavigate();
   const params = useParams();
-  const { productos } = useProductos();
+  const { productos, cargando, error: errorProductos } = useProductos();
   const { agregar } = useCarrito();
   const [error, setError] = useState('');
 
@@ -19,6 +19,22 @@ function Producto() {
   const producto = productos.find((item) => item.id === params.id);
 
   useTituloPagina(producto ? producto.nombre : 'Producto no encontrado');
+
+  if (cargando) {
+    return (
+      <PlantillaPublica>
+        <p className="container py-4" role="status">Cargando producto...</p>
+      </PlantillaPublica>
+    );
+  }
+
+  if (errorProductos) {
+    return (
+      <PlantillaPublica>
+        <p className="container py-4 alert alert-danger" role="alert">{errorProductos}</p>
+      </PlantillaPublica>
+    );
+  }
 
   if (!producto) {
     return (

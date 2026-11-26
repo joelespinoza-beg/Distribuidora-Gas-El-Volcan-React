@@ -10,7 +10,7 @@ import { useTituloPagina } from '../hooks/useTituloPagina';
 
 function NuevoPedido() {
   const navigate = useNavigate();
-  const { productos } = useProductos();
+  const { productos, cargando, error: errorProductos } = useProductos();
   const { agregar } = useCarrito();
   const [mensaje, setMensaje] = useState('');
   const [error, setError] = useState('');
@@ -28,6 +28,8 @@ function NuevoPedido() {
       <div className="container py-4">
         <h1 className="h2">Iniciar solicitud</h1>
         <p className="text-muted">Selecciona productos; podrás revisar y editar la solicitud antes de confirmarla.</p>
+        {cargando && <p role="status">Cargando catálogo...</p>}
+        {errorProductos && <p className="alert alert-danger" role="alert">{errorProductos}</p>}
         {mensaje && <p className="alert alert-success" role="status">{mensaje}</p>}
         {error && <p className="alert alert-danger" role="alert">{error}</p>}
         <CatalogoGas

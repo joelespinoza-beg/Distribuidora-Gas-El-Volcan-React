@@ -10,7 +10,7 @@ import { useTituloPagina } from '../hooks/useTituloPagina';
 
 function Inicio() {
   const navigate = useNavigate();
-  const { productos } = useProductos();
+  const { productos, cargando, error } = useProductos();
   const { agregar } = useCarrito();
   const [mensaje, setMensaje] = useState('');
 
@@ -56,6 +56,9 @@ function Inicio() {
           </div>
         </div>
       </div>
+
+      {cargando && <p className="container py-3" role="status">Cargando catálogo...</p>}
+      {error && <p className="container alert alert-danger mt-3" role="alert">{error}</p>}
 
       <div className="container py-5">
         <div className="row g-4 text-center">

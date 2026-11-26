@@ -48,6 +48,13 @@ describe('carritoService', () => {
     }));
   });
 
+  it('no mezcla precios de cliente residencial y comercial en el mismo pedido', () => {
+    agregarAlCarrito(producto, 6500, 'residencial');
+
+    expect(() => agregarAlCarrito({ ...producto, id: 'RG001' }, 8200, 'comercial'))
+      .toThrow('No puedes mezclar productos residenciales y comerciales');
+  });
+
   it('permite cambiar la cantidad, quitar artículos y vaciar el carrito', () => {
     agregarAlCarrito(producto, 6500);
     cambiarCantidadCarrito('CL001', 2);

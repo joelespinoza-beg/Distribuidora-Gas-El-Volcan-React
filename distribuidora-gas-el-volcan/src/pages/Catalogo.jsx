@@ -13,7 +13,7 @@ import { useTituloPagina } from '../hooks/useTituloPagina';
 function Catalogo() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const { productos } = useProductos();
+  const { productos, cargando, error } = useProductos();
   const { agregar } = useCarrito();
 
 
@@ -49,6 +49,8 @@ function Catalogo() {
   return (
     <PlantillaPublica>
       <div className="container py-4">
+        {cargando && <p role="status">Cargando catálogo...</p>}
+        {error && <p className="alert alert-danger" role="alert">{error}</p>}
         {mensaje && <p className="alert alert-success" role="status">{mensaje}</p>}
         {errorCarrito && <p className="alert alert-danger" role="alert">{errorCarrito}</p>}
         <div className="row g-3 mb-4">
@@ -97,7 +99,7 @@ function Catalogo() {
           onVer={(producto) => navigate(`/producto/${producto.id}`)}
         />
 
-        {visibles.length === 0 && (
+        {!cargando && !error && visibles.length === 0 && (
           <p role="status" className="text-muted mt-3">
             No hay productos que coincidan con tu búsqueda.
           </p>

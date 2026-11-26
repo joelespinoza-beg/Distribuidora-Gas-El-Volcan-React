@@ -32,6 +32,10 @@ api.interceptors.response.use(
       datos?.message ||
       datos?.error ||
       (error.response ? `Error HTTP ${error.response.status}` : 'No se pudo conectar con el servidor');
-    return Promise.reject(new Error(mensaje));
+    const errorNormalizado = new Error(mensaje);
+    if (error.response?.status) {
+      errorNormalizado.status = error.response.status;
+    }
+    return Promise.reject(errorNormalizado);
   }
 );

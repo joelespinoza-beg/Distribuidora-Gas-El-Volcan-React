@@ -161,6 +161,7 @@ Las pruebas unitarias utilizan los nombres `*.test.js` y `*.test.jsx` y se encue
 
 | Ruta | Roles permitidos | Vista |
 |---|---|---|
+| `/perfil` | Todos los usuarios autenticados | Perfil y datos del cliente |
 | `/operadora` | `operadora`, `admin` | Gestión de pedidos |
 | `/repartidor` | `repartidor`, `admin` | Entregas asignadas |
 | `/admin/productos` | `admin` | CRUD de productos |

@@ -15,7 +15,7 @@ const descuentosPorProducto = {
 
 function Ofertas() {
   const navigate = useNavigate();
-  const { productos } = useProductos();
+  const { productos, cargando, error: errorProductos } = useProductos();
   const { agregar } = useCarrito();
   const [mensaje, setMensaje] = useState('');
   const [error, setError] = useState('');
@@ -32,7 +32,7 @@ function Ofertas() {
         precioOriginal,
         descuento,
         precio: Math.round(precioOriginal * (1 - descuento / 100)),
-        tipoCliente: `Oferta ${descuento}%`
+        tipoCliente: 'residencial'
       };
     });
 
@@ -52,8 +52,11 @@ function Ofertas() {
       <div className="container py-4">
         <h1 className="h2">Ofertas</h1>
         <p className="text-muted">
-          Productos seleccionados con precios promocionales de demostración.
+          Productos destacados con precios promocionales de demostración. La API confirma
+          el precio final al registrar el pedido.
         </p>
+        {cargando && <p role="status">Cargando catálogo...</p>}
+        {errorProductos && <p className="alert alert-danger" role="alert">{errorProductos}</p>}
         {mensaje && <p className="alert alert-success" role="status">{mensaje}</p>}
         {error && <p className="alert alert-danger" role="alert">{error}</p>}
         {ofertas.length ? (

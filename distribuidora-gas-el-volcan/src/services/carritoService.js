@@ -27,6 +27,10 @@ export function agregarAlCarrito(producto, precio, tipoCliente = 'residencial') 
     return existente;
   }
 
+  if (lineas.some((linea) => linea.tipoCliente !== tipoCliente)) {
+    throw new Error('No puedes mezclar productos residenciales y comerciales en un pedido.');
+  }
+
   if (producto.stock < 1) {
     throw new Error(`${producto.nombre} no tiene stock disponible.`);
   }

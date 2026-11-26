@@ -34,6 +34,34 @@ describe('Navbar', () => {
     expect(onNavegar).toHaveBeenCalledWith('/carrito')
   })
 
+  it('reemplaza el acceso de ingreso por perfil, rol y cierre de sesión autenticado', () => {
+    const onNavegar = vi.fn()
+    const onCerrarSesion = vi.fn()
+
+    render(
+      <Navbar
+        usuario={{ nombre: 'Ana', rol: 'CLIENTE' }}
+        onNavegar={onNavegar}
+        onCerrarSesion={onCerrarSesion}
+      />
+    )
+
+    expect(screen.queryByRole('link', { name: 'Ingresar' })).not.toBeInTheDocument()
+    expect(screen.getByText('Rol: Cliente')).toBeInTheDocument()
+    fireEvent.click(screen.getByRole('link', { name: 'Perfil' }))
+    expect(onNavegar).toHaveBeenCalledWith('/perfil')
+
+    fireEvent.click(screen.getByRole('button', { name: 'Cerrar sesión' }))
+    expect(onCerrarSesion).toHaveBeenCalledOnce()
+  })
+
+  it('no muestra ingreso mientras restaura una sesión existente', () => {
+    render(<Navbar cargandoSesion />)
+
+    expect(screen.queryByRole('link', { name: 'Ingresar' })).not.toBeInTheDocument()
+    expect(screen.getByRole('status')).toHaveTextContent('Verificando sesión')
+  })
+
   it('permite abrir y cerrar el menú colapsable en dispositivos móviles', () => {
     render(<Navbar />)
 

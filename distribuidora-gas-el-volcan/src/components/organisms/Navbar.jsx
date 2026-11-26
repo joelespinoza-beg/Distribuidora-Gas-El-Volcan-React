@@ -6,6 +6,12 @@ const enlacesPorDefecto = [
   { id: 'categorias', texto: 'Categorías', ruta: '/categorias' }
 ];
 
+const nombresRoles = {
+  CLIENTE: 'Cliente',
+  OPERADORA: 'Operadora',
+  REPARTIDOR: 'Repartidor',
+  ADMIN: 'Administrador'
+};
 
 function Navbar(props) {
   const enlaces = props.enlaces ?? enlacesPorDefecto;
@@ -19,6 +25,15 @@ function Navbar(props) {
     evento.preventDefault();
     setAbierto(false);
     props.onNavegar?.(ruta);
+  }
+
+  function cerrarSesion() {
+    setAbierto(false);
+    props.onCerrarSesion?.();
+  }
+
+  function navegarPerfil(evento) {
+    ir(evento, '/perfil');
   }
 
   function estaActivo(ruta) {
@@ -92,13 +107,33 @@ function Navbar(props) {
                 )}
               </a>
             )}
-            <a
-              href={rutaLogin}
-              className="btn btn-outline-light"
-              onClick={(e) => ir(e, rutaLogin)}
-            >
-              {props.textoLogin || 'Ingresar'}
-            </a>
+            {props.usuario ? (
+              <>
+                <span className="badge text-bg-secondary">
+                  Rol: {nombresRoles[props.usuario.rol] ?? props.usuario.rol}
+                </span>
+                <a href="/perfil" className="btn btn-outline-light" onClick={navegarPerfil}>
+                  Perfil
+                </a>
+                <button
+                  type="button"
+                  className="btn btn-outline-light"
+                  onClick={cerrarSesion}
+                >
+                  Cerrar sesión
+                </button>
+              </>
+            ) : props.cargandoSesion ? (
+              <span className="text-light" role="status">Verificando sesión...</span>
+            ) : (
+              <a
+                href={rutaLogin}
+                className="btn btn-outline-light"
+                onClick={(evento) => ir(evento, rutaLogin)}
+              >
+                {props.textoLogin || 'Ingresar'}
+              </a>
+            )}
           </div>
         </div>
       </div>
