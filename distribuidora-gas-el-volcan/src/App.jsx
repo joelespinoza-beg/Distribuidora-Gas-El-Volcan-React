@@ -26,6 +26,7 @@ import Operadora from './pages/Operadora';
 import Repartidor from './pages/Repartidor';
 import AdminProductos from './pages/AdminProductos';
 import AdminUsuarios from './pages/AdminUsuarios';
+import Perfil from './pages/Perfil';
 import NoEncontrada from './pages/NoEncontrada';
 
 function App(props) {
@@ -54,6 +55,15 @@ function App(props) {
                 <Route path="/seguimiento/:id" element={<SeguimientoPedido />} />
 
                 {/* Rutas Protegidas por Rol */}
+                <Route
+                  path="/perfil"
+                  element={
+                    <RutaProtegida rolesPermitidos={['cliente', 'operadora', 'repartidor', 'admin']}>
+                      <Perfil />
+                    </RutaProtegida>
+                  }
+                />
+
                 <Route 
                   path="/operadora" 
                   element={

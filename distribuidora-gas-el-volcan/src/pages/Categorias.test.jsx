@@ -9,6 +9,14 @@ vi.mock('../services/productoService', () => ({
   eliminarProducto: vi.fn()
 }));
 
+vi.mock('../hooks/useAutenticacion', () => ({
+  useAutenticacion: () => ({
+    usuario: null,
+    cargandoSesion: false,
+    cerrarSesion: vi.fn()
+  })
+}));
+
 import { listarProductos } from '../services/productoService';
 import { ProductosProvider } from '../context/ProductosContext';
 import { CarritoProvider } from '../context/CarritoContext';

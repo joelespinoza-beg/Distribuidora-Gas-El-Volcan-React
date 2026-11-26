@@ -7,7 +7,7 @@ import { useTituloPagina } from '../hooks/useTituloPagina';
 
 function Categorias() {
   const navigate = useNavigate();
-  const { productos } = useProductos();
+  const { productos, cargando, error } = useProductos();
 
   useTituloPagina('Categorías');
 
@@ -26,7 +26,9 @@ function Categorias() {
           Explora nuestros productos por categoría.
         </p>
 
-        {categorias.length === 0 ? (
+        {cargando && <p role="status">Cargando categorías...</p>}
+        {error && <p className="alert alert-danger" role="alert">{error}</p>}
+        {!cargando && !error && categorias.length === 0 ? (
           <p role="status" className="text-muted">
             No hay categorías disponibles por el momento.
           </p>

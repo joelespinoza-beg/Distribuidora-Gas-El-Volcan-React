@@ -3,6 +3,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import Navbar from '../organisms/Navbar';
 import Footer from '../organisms/Footer';
 import { useCarrito } from '../../context/CarritoContext';
+import { useAutenticacion } from '../../hooks/useAutenticacion';
 
 const enlacesPublicos = [
   { id: 'inicio', texto: 'Inicio', ruta: '/' },
@@ -19,14 +20,29 @@ function PlantillaPublica(props) {
   const navigate = useNavigate();
   const ubicacion = useLocation();
   const { cantidadTotal } = useCarrito();
+  const { usuario, cargandoSesion, cerrarSesion } = useAutenticacion();
+  const enlacesRol = {
+    OPERADORA: { id: 'panel', texto: 'Pedidos del día', ruta: '/operadora' },
+    REPARTIDOR: { id: 'panel', texto: 'Mis entregas', ruta: '/repartidor' },
+    ADMIN: { id: 'panel', texto: 'Panel interno', ruta: '/admin/productos' }
+  };
+  const enlaces = enlacesRol[usuario?.rol]
+    ? [...enlacesPublicos, enlacesRol[usuario.rol]]
+    : enlacesPublicos;
 
   return (
     <div className="d-flex flex-column min-vh-100">
       <Navbar
-        enlaces={enlacesPublicos}
+        enlaces={enlaces}
         rutaActual={ubicacion.pathname}
         cantidadCarrito={cantidadTotal}
         onNavegar={navigate}
+        usuario={usuario}
+        cargandoSesion={cargandoSesion}
+        onCerrarSesion={() => {
+          cerrarSesion();
+          navigate('/');
+        }}
       />
 
       <main className="flex-grow-1">

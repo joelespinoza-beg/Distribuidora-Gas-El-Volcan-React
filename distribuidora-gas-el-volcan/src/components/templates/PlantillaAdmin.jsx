@@ -1,51 +1,56 @@
 import React from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
+import Navbar from '../organisms/Navbar';
+import Footer from '../organisms/Footer';
 import { useAutenticacion } from '../../hooks/useAutenticacion';
 
-function PlantillaAdmin(props) {
-  const { usuario, cerrarSesion } = useAutenticacion();
-  const navigate = useNavigate();
-
-  const enlacesAdmin = [
+const enlacesPorRol = {
+  OPERADORA: [
+    { id: 'pedidos', texto: 'Pedidos del día', ruta: '/operadora' }
+  ],
+  REPARTIDOR: [
+    { id: 'entregas', texto: 'Mis entregas', ruta: '/repartidor' }
+  ],
+  ADMIN: [
     { id: 'productos', texto: 'Productos', ruta: '/admin/productos' },
-    { id: 'usuarios', texto: 'Usuarios', ruta: '/admin/usuarios' }
-  ];
+    { id: 'usuarios', texto: 'Usuarios', ruta: '/admin/usuarios' },
+    { id: 'pedidos', texto: 'Pedidos del día', ruta: '/operadora' },
+    { id: 'entregas', texto: 'Entregas', ruta: '/repartidor' }
+  ]
+};
 
-  function salir() {
-    cerrarSesion();
-    navigate('/login');
-  }
+const enlacesAdmin = [
+  { id: 'productos', texto: 'Productos', ruta: '/admin/productos' },
+  { id: 'pedidos', texto: 'Pedidos del día', ruta: '/operadora' },
+  { id: 'entregas', texto: 'Entregas', ruta: '/repartidor' }
+];
+
+function PlantillaAdmin(props) {
+  const navigate = useNavigate();
+  const ubicacion = useLocation();
+  const { usuario, cargandoSesion, cerrarSesion } = useAutenticacion();
+  const enlaces = enlacesPorRol[usuario?.rol] ?? enlacesAdmin;
 
   return (
-    <div className="d-flex min-vh-100 bg-light">
-      {/* Sidebar */}
-      <aside className="bg-dark text-white p-3 d-flex flex-column" style={{ width: '250px' }}>
-        <h2 className="h5 text-center mb-4 border-bottom pb-2">Panel Admin</h2>
-        
-        <nav className="nav flex-column gap-2 mb-auto">
-          {enlacesAdmin.map((enlace) => (
-            <Link 
-              key={enlace.id} 
-              to={enlace.ruta} 
-              className="nav-link text-white rounded bg-secondary bg-opacity-25"
-            >
-              {enlace.texto}
-            </Link>
-          ))}
-        </nav>
+    <div className="d-flex flex-column min-vh-100">
+      <Navbar
+        marca="Panel Gas El Volcán"
+        enlaces={enlaces}
+        rutaActual={ubicacion.pathname}
+        onNavegar={navigate}
+        usuario={usuario}
+        cargandoSesion={cargandoSesion}
+        onCerrarSesion={() => {
+          cerrarSesion();
+          navigate('/');
+        }}
+      />
 
-        <div className="mt-4 pt-3 border-top text-center">
-          <p className="small mb-2">Sesión: {usuario?.nombre}</p>
-          <button className="btn btn-outline-light btn-sm w-100" onClick={salir}>
-            Cerrar Sesión
-          </button>
-        </div>
-      </aside>
-
-      {/* Contenido principal */}
-      <main className="flex-grow-1 p-4">
+      <main className="container py-4 flex-grow-1">
         {props.children}
       </main>
+
+      <Footer />
     </div>
   );
 }
